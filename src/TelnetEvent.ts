@@ -29,21 +29,29 @@ export class TelnetEvent {
   }
 
   /**
-   * Interpret this event as a data event. Either TelnetEventType.{Data | Send}. 
-   * 
+   * Interpret this event as a data event. Either TelnetEventType.{Data | Send}.
+   *
    * struct data_t {
    *   enum telnet_event_type_t _type;
-   *   const char *buffer;             
-   *   size_t size; 
-	 * } data;
+   *   const char *buffer;
+   *   size_t size;
+   * } data;
    */
   public get data(): IDataEvent {
     const pointer = this.pointer;
-    const bufferPointer = this.heap.getUint32(pointer + TelnetEvent.data_t_buffer_offset, true);
-    const bufferLength = this.heap.getUint32(pointer + TelnetEvent.data_t_size_offset, true);
+    const bufferPointer = this.heap.getUint32(
+      pointer + TelnetEvent.data_t_buffer_offset,
+      true,
+    );
+    const bufferLength = this.heap.getUint32(
+      pointer + TelnetEvent.data_t_size_offset,
+      true,
+    );
     return {
       type: this.type,
-      buffer: new Uint8Array(this.heap.buffer.slice(bufferPointer, bufferPointer + bufferLength)),
+      buffer: new Uint8Array(
+        this.heap.buffer.slice(bufferPointer, bufferPointer + bufferLength),
+      ),
       size: bufferLength,
     };
   }

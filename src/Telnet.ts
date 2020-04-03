@@ -2,14 +2,18 @@ import { TelnetEvent } from "./TelnetEvent";
 
 const telnet = require("../build/libtelnet");
 
-telnet.onRuntimeInitialized = function() {
+telnet.onRuntimeInitialized = function () {
   telnet._init();
   console.log(Telnet);
-}
+};
 export class Telnet {
   private static map = new Map<number, Telnet>();
 
-  public static route(telnet: number, _eventPointer: number, _userDataPointer: number): void {
+  public static route(
+    telnet: number,
+    _eventPointer: number,
+    _userDataPointer: number,
+  ): void {
     let target = Telnet.map.get(telnet);
     if (!target) throw new Error("Invalid event target.");
   }
@@ -25,4 +29,3 @@ export class Telnet {
     console.log(this.pointer);
   }
 }
-
