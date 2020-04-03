@@ -1,0 +1,50 @@
+{
+  "name": "libtelnet-ts",
+  "version": "0.0.1",
+  "description": "libtelnet compiled to wasm, and wrapped in typescript",
+  "main": "lib/index.js",
+  "scripts": {
+    "rimraf-build": "rimraf build",
+    "mkdir-build": "mkdir build",
+    "compile": "emcc -O2 libtelnet.c -s EXPORTED_FUNCTIONS=@libtelnet.exports -o build/libtelnet.js",
+    "build": "run-s rimraf-build mkdir-build compile tsc",
+    "tsc": "tsc",
+    "prettier": "prettier --write .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pre-commit": "run-s prettier build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jtenner/libtelnet-ts.git"
+  },
+  "keywords": [
+    "telnet",
+    "wasm",
+    "typescript"
+  ],
+  "files": [
+    "build/",
+    "lib/",
+    "COPYING",
+    "AUTHORS"
+  ],
+  "author": "Joshua Tenner",
+  "license": "SEE LICENSE IN COPYING",
+  "bugs": {
+    "url": "https://github.com/jtenner/libtelnet-ts/issues"
+  },
+  "homepage": "https://github.com/jtenner/libtelnet-ts#readme",
+  "devDependencies": {
+    "@types/node": "^13.11.0",
+    "husky": "^4.2.3",
+    "mkdir": "0.0.2",
+    "prettier": "^2.0.2",
+    "rimraf": "^3.0.2",
+    "typescript": "^3.9.0-beta"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run pre-commit"
+    }
+  }
+}
