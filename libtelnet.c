@@ -17,6 +17,7 @@
 #include <errno.h>
 #include <string.h>
 #include <stdarg.h>
+#include <emscripten.h>
 
 /* Win32 compatibility */
 #if defined(_WIN32)
@@ -39,6 +40,22 @@
 #endif
 
 #include "libtelnet.h"
+
+EM_JS(void, _init, (
+	int data_t_buffer_offset,
+	int data_t_size_offset
+), {
+	let Telnet = require("../lib/TelnetEvent").TelnetEvent;
+	Telnet.data_t_buffer_offset = data_t_buffer_offset;
+	Telnet.data_t_size_offset = data_t_size_offset;
+});
+
+void init() {
+	_init(
+		offsetof(struct data_t, buffer),
+		offsetof(struct data_t, size)
+	);
+}
 
 /* inlinable functions */
 #if defined(__GNUC__) || __STDC_VERSION__ >= 199901L
@@ -878,9 +895,12 @@ static int _subnegotiate(telnet_t *telnet) {
 	}
 }
 
+EM_JS(void, generic_event_handler, (telnet_t *telnet, telnet_event_t *event, void *user_data), {
+	require("../lib/Telnet").Telnet.route(telnet, event, user_data);
+});
+
 /* initialize a telnet state tracker */
-telnet_t *telnet_init(const telnet_telopt_t *telopts,
-		telnet_event_handler_t eh, unsigned char flags, void *user_data) {
+telnet_t *telnet_init(const telnet_telopt_t *telopts, unsigned char flags, void *user_data) {
 	/* allocate structure */
 	struct telnet_t *telnet = (telnet_t*)calloc(1, sizeof(telnet_t));
 	if (telnet == 0)
@@ -889,7 +909,7 @@ telnet_t *telnet_init(const telnet_telopt_t *telopts,
 	/* initialize data */
 	telnet->ud = user_data;
 	telnet->telopts = telopts;
-	telnet->eh = eh;
+	telnet->eh = *generic_event_handler;
 	telnet->flags = flags;
 
 	return telnet;

@@ -369,6 +369,11 @@ struct telnet_telopt_t {
 struct telnet_t;
 
 /*!
+ * \brief Initialize the telnet module by reporting offsets to the host.
+ */
+extern void init();
+
+/*!
  * \brief Initialize a telnet state tracker.
  *
  * This function initializes a new state tracker, which is used for all
@@ -376,13 +381,11 @@ struct telnet_t;
  * telnet state tracker object.
  *
  * \param telopts   Table of TELNET options the application supports.
- * \param eh        Event handler function called for every event.
  * \param flags     0 or TELNET_FLAG_PROXY.
  * \param user_data Optional data pointer that will be passsed to eh.
  * \return Telnet state tracker object.
  */
-extern telnet_t* telnet_init(const telnet_telopt_t *telopts,
-		telnet_event_handler_t eh, unsigned char flags, void *user_data);
+extern telnet_t* telnet_init(const telnet_telopt_t *telopts,  unsigned char flags, void *user_data);
 
 /*!
  * \brief Free up any memory allocated by a state tracker.
