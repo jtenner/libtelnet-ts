@@ -1,1 +1,1 @@
-{"version":3,"file":"Telnet.d.ts","sourceRoot":"","sources":["../src/Telnet.ts"],"names":[],"mappings":"AAEA,qBAAa,MAAM;CAAG"}
+{"version":3,"file":"Telnet.d.ts","sourceRoot":"","sources":["../src/Telnet.ts"],"names":[],"mappings":"AAEA,qBAAa,MAAM;IACjB,OAAO,CAAC,OAAO,CAAkC;;CAKlD"}
