@@ -30,7 +30,11 @@ visit the following websites:
 - http://www.faqs.org/rfcs/rfc1408.html
 - http://www.faqs.org/rfcs/rfc1572.html
 
-## II. API
+## II. TS API
+
+The TS api is a simple wrapper for the libtelnet package.
+
+## III. C API
 
 The libtelnet API contains several distinct parts. The first part is
 the basic initialization and deinitialization routines. The second
@@ -44,7 +48,7 @@ This document covers only the most basic functions. See the
 libtelnet manual pages or HTML documentation for a complete
 reference.
 
-#### IIa. Initialization
+#### IIIa. Initialization
 
 Using libtelnet requires the initialization of a telnet_t structure
 which stores all current state for a single TELNET connection.
@@ -134,7 +138,7 @@ applications will support only a fixed set of options.
   closed, or you will incur memory leaks. The pointer passed in may
   no longer be used afterwards.
 
-#### IIb. Receiving Data
+#### IIIb. Receiving Data
 
 - `void telnet_recv(telnet_t *telnet, const char *buffer, unsigned int size, void *user_data);`
 
@@ -147,7 +151,7 @@ applications will support only a fixed set of options.
   triggered for any regular data such as user input or server
   process output.
 
-#### IIc. Sending Data
+#### IIIc. Sending Data
 
 All of the output functions will invoke the TELNET_EV_SEND event.
 
@@ -241,7 +245,7 @@ unprocessed output data directly!
   NOTE: due to an internal implementation detail, the maximum
   lenth of the formatted text is 4096 characters.
 
-#### IId. Event Handling
+#### IIId. Event Handling
 
 libtelnet relies on an event-handling mechanism for processing the
 parsed TELNET protocol stream as well as for buffering and sending
@@ -531,12 +535,12 @@ void my_event_handler(telnet_t *telnet, telnet_event_t *ev,
   The event->error.msg field will contain a NUL terminated string
   explaining the error.
 
-## III. Integrating libtelnet with common muds
+## IV. Integrating libtelnet with common muds
 
 FIXME: fill in some notes about how to splice in libtelnet with
 common Diku/Merc/Circle/etc. MUD codebases.
 
-## IV. Safety and correctness considerations
+## V. Safety and correctness considerations
 
 Your existing application may make heavy use of its own output
 buffering and transmission commands, including hand-made routines for
@@ -563,7 +567,7 @@ following: telnet_iac, telnet_negotiate, or telnet_subnegotiation().
 If you are attempting to enable COMPRESS2/MCCP2, you must use the
 telnet_begin_compress2() function.
 
-## V. MCCP2 compression
+## VI. MCCP2 compression
 
 The MCCP2 (COMPRESS2) TELNET extension allows for the compression of
 all traffic sent from server to client. For more information:
@@ -589,7 +593,7 @@ If a connection is in PROXY mode and COMPRESS2 support is enabled
 then libtelnet will automatically detect the start of a COMPRESS2
 stream, in either the sending or receiving direction.
 
-## VI. Zenith MUD Protocol (ZMP) support
+## VII. Zenith MUD Protocol (ZMP) support
 
 The Zenith MUD Protocol allows applications to send messages across
 the TELNET connection outside of the normal user input/output data
@@ -636,7 +640,7 @@ or telnet_send_zmpv().
   The argv array must have at least as many elements as the value
   argc.
 
-## VII. MUD Server Status Protocol (MSSP) support
+## VIII. MUD Server Status Protocol (MSSP) support
 
 MSSP allows for crawlers or other clients to query a MUD server's
 supported feature list. This allows MUD listing states to
@@ -646,7 +650,7 @@ their MUD. For more information on MSSP:
 
 http://tintin.sourceforge.net/mssp/
 
-## VIII. Telnet proxy utility
+## IX. Telnet proxy utility
 
 The telnet-proxy utility is a small application that serves both as a
 testbed for libtelnet and as a powerful debugging tool for TELNET
