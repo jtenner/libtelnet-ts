@@ -1,3 +1,5 @@
+import { consts } from "./consts";
+
 const telnet = require("../build/libtelnet");
 
 const U32_ALIGN = 2;
@@ -12,14 +14,14 @@ function getEnvironVars(
   for (let i = 0; i < size; i++) {
     const environVarPointer = heap.getUint32(pointer + (i << U32_ALIGN));
     const valueStringPointer = heap.getUint32(
-      environVarPointer + TelnetEvent.telnet_environ_t_value_offset,
+      environVarPointer + consts.telnet_environ_t_value_offset,
     );
     const varStringPointer = heap.getUint32(
-      environVarPointer + TelnetEvent.telnet_environ_t_var_offset,
+      environVarPointer + consts.telnet_environ_t_var_offset,
     );
     result.push({
       type: heap.getUint8(
-        environVarPointer + TelnetEvent.telnet_environ_t_type_offset,
+        environVarPointer + consts.telnet_environ_t_type_offset,
       ),
       value: telnet.UTF8ToString(valueStringPointer),
       var: telnet.UTF8ToString(varStringPointer),
@@ -225,11 +227,11 @@ export class TelnetEvent {
   public get data(): IData {
     const pointer = this.pointer;
     const bufferPointer = this.heap.getUint32(
-      pointer + TelnetEvent.data_t_buffer_offset,
+      pointer + consts.data_t_buffer_offset,
       true,
     );
     const bufferLength = this.heap.getUint32(
-      pointer + TelnetEvent.data_t_size_offset,
+      pointer + consts.data_t_size_offset,
       true,
     );
     return {
@@ -247,17 +249,17 @@ export class TelnetEvent {
   public get error(): IError {
     const heap = this.heap;
     const filePointer = heap.getUint32(
-      this.pointer + TelnetEvent.error_t_file_offset,
+      this.pointer + consts.error_t_file_offset,
     );
     const funcPointer = heap.getUint32(
-      this.pointer + TelnetEvent.error_t_func_offset,
+      this.pointer + consts.error_t_func_offset,
     );
     const messagePointer = heap.getUint32(
-      this.pointer + TelnetEvent.error_t_msg_offset,
+      this.pointer + consts.error_t_msg_offset,
     );
-    const line = heap.getUint32(this.pointer + TelnetEvent.error_t_line_offset);
+    const line = heap.getUint32(this.pointer + consts.error_t_line_offset);
     const errcode: TelnetErrorCode = heap.getUint32(
-      this.pointer + TelnetEvent.error_t_errcode_offset,
+      this.pointer + consts.error_t_errcode_offset,
     );
 
     return {
@@ -273,7 +275,7 @@ export class TelnetEvent {
   public get iac(): IIAC {
     return {
       type: this.type as TelnetEventType.IAC,
-      cmd: this.heap.getUint8(this.pointer + TelnetEvent.iac_t_cmd_offset),
+      cmd: this.heap.getUint8(this.pointer + consts.iac_t_cmd_offset),
     };
   }
 
@@ -281,7 +283,7 @@ export class TelnetEvent {
     return {
       type: this.type as NegotiationEvent,
       telopt: this.heap.getUint8(
-        this.pointer + TelnetEvent.negotiate_t_telopt_offset,
+        this.pointer + consts.negotiate_t_telopt_offset,
       ),
     };
   }
@@ -290,13 +292,11 @@ export class TelnetEvent {
     const heap = this.heap;
     const pointer = this.pointer;
     const bufferPointer = heap.getUint32(
-      pointer + TelnetEvent.subnegotiate_t_buffer_offset,
+      pointer + consts.subnegotiate_t_buffer_offset,
     );
-    const size = heap.getUint32(
-      pointer + TelnetEvent.subnegotiate_t_size_offset,
-    );
+    const size = heap.getUint32(pointer + consts.subnegotiate_t_size_offset);
     const telopt: TelnetOption = heap.getUint8(
-      pointer + TelnetEvent.subnegotiate_t_telopt_offset,
+      pointer + consts.subnegotiate_t_telopt_offset,
     );
     return {
       buffer: new Uint8Array(this.heap.buffer, bufferPointer, size),
@@ -309,9 +309,9 @@ export class TelnetEvent {
   public get zmp(): IZMP {
     const heap = this.heap;
     const pointer = this.pointer;
-    const argc = heap.getUint32(pointer + TelnetEvent.zmp_t_argc_offset);
+    const argc = heap.getUint32(pointer + consts.zmp_t_argc_offset);
     // pointer + argv_offset is the memory location for the array of pointers
-    const argvPointer = heap.getUint32(pointer + TelnetEvent.zmp_t_argv_offset);
+    const argvPointer = heap.getUint32(pointer + consts.zmp_t_argv_offset);
     const argv: string[] = [];
 
     for (let i = 0; i < argc; i++) {
@@ -331,10 +331,8 @@ export class TelnetEvent {
   public get ttype(): ITType {
     const heap = this.heap;
     const pointer = this.pointer;
-    const cmd: TType = heap.getUint8(pointer + TelnetEvent.ttype_t_cmd_offset);
-    const namePointer = heap.getUint8(
-      pointer + TelnetEvent.ttype_t_name_offset,
-    );
+    const cmd: TType = heap.getUint8(pointer + consts.ttype_t_cmd_offset);
+    const namePointer = heap.getUint8(pointer + consts.ttype_t_name_offset);
     return {
       cmd,
       name: telnet.UTF8ToString(namePointer),
@@ -346,9 +344,7 @@ export class TelnetEvent {
     return {
       type: this.type as TelnetEventType.COMPRESS,
       state:
-        this.heap.getUint8(
-          this.pointer + TelnetEvent.compress_t_state_offset,
-        ) === 1,
+        this.heap.getUint8(this.pointer + consts.compress_t_state_offset) === 1,
     };
   }
 
@@ -356,13 +352,13 @@ export class TelnetEvent {
     const pointer = this.pointer;
     const heap = this.heap;
     const cmd: EnvironCommand = heap.getUint8(
-      pointer + TelnetEvent.environ_t_cmd_offset,
+      pointer + consts.environ_t_cmd_offset,
     );
-    const size = heap.getUint32(pointer + TelnetEvent.environ_t_size_offset);
+    const size = heap.getUint32(pointer + consts.environ_t_size_offset);
     const valuesPointer = heap.getUint32(
-      pointer + TelnetEvent.environ_t_values_offset,
+      pointer + consts.environ_t_values_offset,
     );
-    const values: IEnvironVar[] = getEnvironVars(valuesPointer, size, heap);
+    const values = getEnvironVars(valuesPointer, size, heap);
 
     return {
       cmd,
@@ -375,11 +371,11 @@ export class TelnetEvent {
   public get mssp(): IMSSP {
     const pointer = this.pointer;
     const heap = this.heap;
-    const size = heap.getUint32(pointer + TelnetEvent.environ_t_size_offset);
+    const size = heap.getUint32(pointer + consts.environ_t_size_offset);
     const valuesPointer = heap.getUint32(
-      pointer + TelnetEvent.environ_t_values_offset,
+      pointer + consts.environ_t_values_offset,
     );
-    const values: IEnvironVar[] = getEnvironVars(valuesPointer, size, heap);
+    const values = getEnvironVars(valuesPointer, size, heap);
 
     return {
       size,
@@ -387,31 +383,4 @@ export class TelnetEvent {
       type: this.type as TelnetEventType.MSSP,
     };
   }
-}
-
-// This set of constants are controlled by the init() function in libtelnet.c
-export namespace TelnetEvent {
-  export let data_t_buffer_offset: number = 0;
-  export let data_t_size_offset: number = 0;
-  export let error_t_file_offset: number = 0;
-  export let error_t_func_offset: number = 0;
-  export let error_t_msg_offset: number = 0;
-  export let error_t_line_offset: number = 0;
-  export let error_t_errcode_offset: number = 0;
-  export let iac_t_cmd_offset: number = 0;
-  export let negotiate_t_telopt_offset: number = 0;
-  export let subnegotiate_t_buffer_offset: number = 0;
-  export let subnegotiate_t_size_offset: number = 0;
-  export let subnegotiate_t_telopt_offset: number = 0;
-  export let zmp_t_argc_offset: number = 0;
-  export let zmp_t_argv_offset: number = 0;
-  export let ttype_t_cmd_offset: number = 0;
-  export let ttype_t_name_offset: number = 0;
-  export let compress_t_state_offset: number = 0;
-  export let environ_t_values_offset: number = 0;
-  export let environ_t_size_offset: number = 0;
-  export let environ_t_cmd_offset: number = 0;
-  export let telnet_environ_t_type_offset: number = 0;
-  export let telnet_environ_t_var_offset: number = 0;
-  export let telnet_environ_t_value_offset: number = 0;
 }

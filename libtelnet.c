@@ -66,9 +66,12 @@ EM_JS(void, _init, (
 	int telnet_environ_t_var_offset,
 	int telnet_environ_t_value_offset,
 	int mssp_t_values_offset,
-	int mssp_t_size_offset
+	int mssp_t_size_offset,
+	int telnet_telopt_t_telopt_offset,
+	int telnet_telopt_t_us_offset,
+	int telnet_telopt_t_him_offset
 ), {
-	const a = require("../lib/TelnetEvent").TelnetEvent;
+	const a = require("../lib/consts").consts;
 	a.data_t_buffer_offset = data_t_buffer_offset;
 	a.data_t_size_offset = data_t_size_offset;
 	a.error_t_file_offset = error_t_file_offset;
@@ -94,6 +97,9 @@ EM_JS(void, _init, (
 	a.telnet_environ_t_value_offset = telnet_environ_t_value_offset;
 	a.mssp_t_values_offset = mssp_t_values_offset;
   a.mssp_t_size_offset = mssp_t_size_offset;
+	a.telnet_telopt_t_telopt_offset = telnet_telopt_t_telopt_offset;
+  a.telnet_telopt_t_us_offset = telnet_telopt_t_us_offset;
+  a.telnet_telopt_t_him_offset = telnet_telopt_t_him_offset;
 });
 
 void init() {
@@ -122,7 +128,10 @@ void init() {
 		offsetof(struct telnet_environ_t, var),
 		offsetof(struct telnet_environ_t, value),
 		offsetof(struct mssp_t, values),
-		offsetof(struct mssp_t, size)
+		offsetof(struct mssp_t, size),
+		offsetof(struct telnet_telopt_t, telopt),
+		offsetof(struct telnet_telopt_t, us),
+		offsetof(struct telnet_telopt_t, him)
 	);
 }
 

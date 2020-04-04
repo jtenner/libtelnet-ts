@@ -11,8 +11,10 @@ import {
   ICompress,
   IEnviron,
   IMSSP,
+  TelnetOption,
 } from "./TelnetEvent";
 import { EventEmitter } from "events";
+import { consts } from "./consts";
 
 const telnet = require("../build/libtelnet");
 
@@ -20,6 +22,8 @@ telnet.onRuntimeInitialized = function () {
   telnet._init();
   console.log(telnet);
 };
+
+export type CompatiblityTable = [TelnetOption, boolean, boolean][];
 
 export class Telnet extends EventEmitter {
   private static map = new Map<number, Telnet>();
@@ -107,9 +111,41 @@ export class Telnet extends EventEmitter {
 
   private pointer: number;
 
-  constructor() {
+  constructor(compatibilityTable: CompatiblityTable, flags: number) {
     super();
-    this.pointer = telnet.telnet_init(0, 0, 0);
-    console.log(this.pointer);
+    const heap = new DataView(telnet.HEAPU8.buffer);
+    const length = compatibilityTable.length;
+    const arraySize = (length + 1) << 2;
+    const arrayPointer = telnet._malloc(arraySize);
+    if (arrayPointer === 0) throw new Error("Out of memory.");
+
+    for (let i = 0; i < length; i++) {
+      const entry = compatibilityTable[i];
+      const entryPointer = telnet._malloc(4);
+      if (entryPointer === 0) throw new Error("Out of memory.");
+
+      heap.setUint16(
+        entryPointer + consts.telnet_telopt_t_telopt_offset,
+        entry[0],
+        true,
+      );
+      const us: number = entry[1] ? consts.TELNET_WILL : consts.TELNET_WONT;
+      const them: number = entry[2] ? consts.TELNET_DO : consts.TELNET_DONT;
+      heap.setUint8(entryPointer + consts.telnet_telopt_t_us_offset, us);
+      heap.setUint8(entryPointer + consts.telnet_telopt_t_him_offset, them);
+
+      // set the table entry
+      heap.setUint32(arrayPointer + (i << 2), entryPointer, true);
+    }
+    // telnet_telopt_t shape (4 bytes)
+    // short telopt
+    // unsigned char us
+    // unsigned char him
+
+    this.pointer = telnet._telnet_init(0, flags, 0); // user data is null
+  }
+
+  dispose(): void {
+    telnet._telnet_free(this.pointer);
   }
 }
