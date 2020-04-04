@@ -2,6 +2,33 @@ const telnet = require("../build/libtelnet");
 
 const U32_ALIGN = 2;
 
+function getEnvironVars(
+  pointer: number,
+  size: number,
+  heap: DataView,
+): IEnvironVar[] {
+  const result: IEnvironVar[] = [];
+
+  for (let i = 0; i < size; i++) {
+    const environVarPointer = heap.getUint32(pointer + (i << U32_ALIGN));
+    const valueStringPointer = heap.getUint32(
+      environVarPointer + TelnetEvent.telnet_environ_t_value_offset,
+    );
+    const varStringPointer = heap.getUint32(
+      environVarPointer + TelnetEvent.telnet_environ_t_var_offset,
+    );
+    result.push({
+      type: heap.getUint8(
+        environVarPointer + TelnetEvent.telnet_environ_t_type_offset,
+      ),
+      value: telnet.UTF8ToString(valueStringPointer),
+      var: telnet.UTF8ToString(varStringPointer),
+    });
+  }
+
+  return result;
+}
+
 export enum TelnetEventType {
   DATA = 0,
   SEND,
@@ -19,6 +46,7 @@ export enum TelnetEventType {
   WARNING,
   ERROR,
 }
+
 export enum TelnetOption {
   BINARY = 0,
   ECHO = 1,
@@ -66,6 +94,12 @@ export enum TelnetOption {
   ZMP = 93,
   EXOPL = 255,
   MCCP2 = 86,
+}
+
+export enum EnvironCommand {
+  IS = 0,
+  SEND = 1,
+  INFO = 2,
 }
 
 export type NegotiationEvent =
@@ -134,6 +168,32 @@ export interface IZMP {
 export interface ICompress {
   readonly type: TelnetEventType.COMPRESS;
   readonly state: boolean;
+}
+
+export interface IEnviron {
+  readonly type: TelnetEventType.ENVIRON;
+  readonly values: IEnvironVar[];
+  readonly size: number;
+  readonly cmd: EnvironCommand;
+}
+
+export interface IMSSP {
+  readonly type: TelnetEventType.MSSP;
+  readonly values: IEnvironVar[];
+  readonly size: number;
+}
+
+export enum EnvironVarType {
+  VAR = 0,
+  VALUE = 1,
+  ESC = 2,
+  USERVAR = 3,
+}
+
+export interface IEnvironVar {
+  readonly type: EnvironVarType;
+  readonly var: string;
+  readonly value: string;
 }
 
 export enum TType {
@@ -291,6 +351,42 @@ export class TelnetEvent {
         ) === 1,
     };
   }
+
+  public get environ(): IEnviron {
+    const pointer = this.pointer;
+    const heap = this.heap;
+    const cmd: EnvironCommand = heap.getUint8(
+      pointer + TelnetEvent.environ_t_cmd_offset,
+    );
+    const size = heap.getUint32(pointer + TelnetEvent.environ_t_size_offset);
+    const valuesPointer = heap.getUint32(
+      pointer + TelnetEvent.environ_t_values_offset,
+    );
+    const values: IEnvironVar[] = getEnvironVars(valuesPointer, size, heap);
+
+    return {
+      cmd,
+      size,
+      values,
+      type: this.type as TelnetEventType.ENVIRON,
+    };
+  }
+
+  public get mssp(): IMSSP {
+    const pointer = this.pointer;
+    const heap = this.heap;
+    const size = heap.getUint32(pointer + TelnetEvent.environ_t_size_offset);
+    const valuesPointer = heap.getUint32(
+      pointer + TelnetEvent.environ_t_values_offset,
+    );
+    const values: IEnvironVar[] = getEnvironVars(valuesPointer, size, heap);
+
+    return {
+      size,
+      values,
+      type: this.type as TelnetEventType.MSSP,
+    };
+  }
 }
 
 // This set of constants are controlled by the init() function in libtelnet.c
@@ -312,4 +408,10 @@ export namespace TelnetEvent {
   export let ttype_t_cmd_offset: number = 0;
   export let ttype_t_name_offset: number = 0;
   export let compress_t_state_offset: number = 0;
+  export let environ_t_values_offset: number = 0;
+  export let environ_t_size_offset: number = 0;
+  export let environ_t_cmd_offset: number = 0;
+  export let telnet_environ_t_type_offset: number = 0;
+  export let telnet_environ_t_var_offset: number = 0;
+  export let telnet_environ_t_value_offset: number = 0;
 }

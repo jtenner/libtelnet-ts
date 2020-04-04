@@ -58,7 +58,15 @@ EM_JS(void, _init, (
   int zmp_t_argv_offset,
 	int ttype_t_cmd_offset,
 	int ttype_t_name_offset,
-	int compress_t_state_offset
+	int compress_t_state_offset,
+	int environ_t_values_offset,
+  int environ_t_size_offset,
+  int environ_t_cmd_offset,
+	int telnet_environ_t_type_offset,
+	int telnet_environ_t_var_offset,
+	int telnet_environ_t_value_offset,
+	int mssp_t_values_offset,
+	int mssp_t_size_offset
 ), {
 	const a = require("../lib/TelnetEvent").TelnetEvent;
 	a.data_t_buffer_offset = data_t_buffer_offset;
@@ -78,6 +86,14 @@ EM_JS(void, _init, (
 	a.ttype_t_cmd_offset = ttype_t_cmd_offset;
 	a.ttype_t_name_offset = ttype_t_name_offset;
 	a.compress_t_state_offset = compress_t_state_offset;
+	a.environ_t_values_offset = environ_t_values_offset;
+  a.environ_t_size_offset = environ_t_size_offset;
+  a.environ_t_cmd_offset = environ_t_cmd_offset;
+	a.telnet_environ_t_type_offset = telnet_environ_t_type_offset;
+	a.telnet_environ_t_var_offset = telnet_environ_t_var_offset;
+	a.telnet_environ_t_value_offset = telnet_environ_t_value_offset;
+	a.mssp_t_values_offset = mssp_t_values_offset;
+  a.mssp_t_size_offset = mssp_t_size_offset;
 });
 
 void init() {
@@ -98,7 +114,15 @@ void init() {
 		offsetof(struct zmp_t, argv),
 		offsetof(struct ttype_t, cmd),
 		offsetof(struct ttype_t, name),
-		offsetof(struct compress_t, state)
+		offsetof(struct compress_t, state),
+		offsetof(struct environ_t, values),
+		offsetof(struct environ_t, size),
+		offsetof(struct environ_t, cmd),
+		offsetof(struct telnet_environ_t, type),
+		offsetof(struct telnet_environ_t, var),
+		offsetof(struct telnet_environ_t, value),
+		offsetof(struct mssp_t, values),
+		offsetof(struct mssp_t, size)
 	);
 }
 
