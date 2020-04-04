@@ -13,7 +13,7 @@
     "tsc": "tsc",
     "prettier": "prettier --write .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "pre-commit": "run-s prettier build"
+    "pre-commit": "run-s build"
   },
   "repository": {
     "type": "git",
