@@ -48,7 +48,17 @@ EM_JS(void, _init, (
   int error_t_func_offset,
   int error_t_msg_offset,
   int error_t_line_offset,
-  int error_t_errcode_offset
+  int error_t_errcode_offset,
+	int iac_t_cmd_offset,
+	int negotiate_t_telopt_offset,
+	int subnegotiate_t_buffer_offset,
+  int subnegotiate_t_size_offset,
+  int subnegotiate_t_telopt_offset,
+	int zmp_t_argc_offset,
+  int zmp_t_argv_offset,
+	int ttype_t_cmd_offset,
+	int ttype_t_name_offset,
+	int compress_t_state_offset
 ), {
 	const a = require("../lib/TelnetEvent").TelnetEvent;
 	a.data_t_buffer_offset = data_t_buffer_offset;
@@ -58,6 +68,16 @@ EM_JS(void, _init, (
 	a.error_t_msg_offset = error_t_msg_offset;
 	a.error_t_line_offset = error_t_line_offset;
 	a.error_t_errcode_offset = error_t_errcode_offset;
+	a.iac_t_cmd_offset = iac_t_cmd_offset;
+	a.negotiate_t_telopt_offset = negotiate_t_telopt_offset;
+	a.subnegotiate_t_buffer_offset = subnegotiate_t_buffer_offset;
+  a.subnegotiate_t_size_offset = subnegotiate_t_size_offset;
+  a.subnegotiate_t_telopt_offset = subnegotiate_t_telopt_offset;
+	a.zmp_t_argc_offset = zmp_t_argc_offset;
+	a.zmp_t_argv_offset = zmp_t_argv_offset;
+	a.ttype_t_cmd_offset = ttype_t_cmd_offset;
+	a.ttype_t_name_offset = ttype_t_name_offset;
+	a.compress_t_state_offset = compress_t_state_offset;
 });
 
 void init() {
@@ -68,7 +88,17 @@ void init() {
 		offsetof(struct error_t, func),
 		offsetof(struct error_t, msg),
 		offsetof(struct error_t, line),
-		offsetof(struct error_t, errcode)
+		offsetof(struct error_t, errcode),
+		offsetof(struct iac_t, cmd),
+		offsetof(struct negotiate_t, telopt),
+		offsetof(struct subnegotiate_t, buffer),
+		offsetof(struct subnegotiate_t, size),
+		offsetof(struct subnegotiate_t, telopt),
+		offsetof(struct zmp_t, argc),
+		offsetof(struct zmp_t, argv),
+		offsetof(struct ttype_t, cmd),
+		offsetof(struct ttype_t, name),
+		offsetof(struct compress_t, state)
 	);
 }
 
