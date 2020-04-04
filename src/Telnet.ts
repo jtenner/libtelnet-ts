@@ -115,6 +115,14 @@ export class Telnet extends EventEmitter {
     super();
     const heap = new DataView(telnet.HEAPU8.buffer);
     const length = compatibilityTable.length;
+
+
+    // Need to set the telopt array
+
+    // telnet_telopt_t shape (4 bytes)
+    // short telopt
+    // unsigned char us
+    // unsigned char him
     const arraySize = (length + 1) << 2;
     const arrayPointer = telnet._malloc(arraySize);
     if (arrayPointer === 0) throw new Error("Out of memory.");
@@ -123,8 +131,8 @@ export class Telnet extends EventEmitter {
       const entry = compatibilityTable[i];
       const entryPointer = telnet._malloc(4);
       if (entryPointer === 0) throw new Error("Out of memory.");
-
-      heap.setUint16(
+      
+      heap.setInt16(
         entryPointer + consts.telnet_telopt_t_telopt_offset,
         entry[0],
         true,
@@ -133,16 +141,22 @@ export class Telnet extends EventEmitter {
       const them: number = entry[2] ? consts.TELNET_DO : consts.TELNET_DONT;
       heap.setUint8(entryPointer + consts.telnet_telopt_t_us_offset, us);
       heap.setUint8(entryPointer + consts.telnet_telopt_t_him_offset, them);
-
+      
       // set the table entry
       heap.setUint32(arrayPointer + (i << 2), entryPointer, true);
     }
-    // telnet_telopt_t shape (4 bytes)
-    // short telopt
-    // unsigned char us
-    // unsigned char him
+    
+    // create the last entry
+    const finalEntryPointer = telnet._malloc(4);
+    if (finalEntryPointer === 0) throw new Error("Out of memory.");
+    heap.setUint32(finalEntryPointer, 0, true);
+    heap.setInt16(finalEntryPointer + consts.telnet_telopt_t_telopt_offset, -1);
+    
+    // set the last entry in the table
+    heap.setUint32(arrayPointer + (length << 2), finalEntryPointer, true);
 
-    this.pointer = telnet._telnet_init(0, flags, 0); // user data is null
+    // finally pass the array pointer into the telnet_init function
+    this.pointer = telnet._telnet_init(arrayPointer, flags, 0); // user data is null
   }
 
   dispose(): void {
