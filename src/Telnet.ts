@@ -4,8 +4,9 @@ const telnet = require("../build/libtelnet");
 
 telnet.onRuntimeInitialized = function () {
   telnet._init();
-  console.log(Telnet);
+  console.log(telnet);
 };
+
 export class Telnet {
   private static map = new Map<number, Telnet>();
 

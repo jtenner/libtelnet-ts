@@ -43,17 +43,32 @@
 
 EM_JS(void, _init, (
 	int data_t_buffer_offset,
-	int data_t_size_offset
+	int data_t_size_offset,
+	int error_t_file_offset,
+  int error_t_func_offset,
+  int error_t_msg_offset,
+  int error_t_line_offset,
+  int error_t_errcode_offset
 ), {
-	let Telnet = require("../lib/TelnetEvent").TelnetEvent;
-	Telnet.data_t_buffer_offset = data_t_buffer_offset;
-	Telnet.data_t_size_offset = data_t_size_offset;
+	const a = require("../lib/TelnetEvent").TelnetEvent;
+	a.data_t_buffer_offset = data_t_buffer_offset;
+	a.data_t_size_offset = data_t_size_offset;
+	a.error_t_file_offset = error_t_file_offset;
+	a.error_t_func_offset = error_t_func_offset;
+	a.error_t_msg_offset = error_t_msg_offset;
+	a.error_t_line_offset = error_t_line_offset;
+	a.error_t_errcode_offset = error_t_errcode_offset;
 });
 
 void init() {
 	_init(
 		offsetof(struct data_t, buffer),
-		offsetof(struct data_t, size)
+		offsetof(struct data_t, size),
+		offsetof(struct error_t, file),
+		offsetof(struct error_t, func),
+		offsetof(struct error_t, msg),
+		offsetof(struct error_t, line),
+		offsetof(struct error_t, errcode)
 	);
 }
 
