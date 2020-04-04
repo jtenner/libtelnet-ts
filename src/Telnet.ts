@@ -1,4 +1,17 @@
-import { TelnetEvent, TelnetEventType, INegotiation, IIAC, IData, IError, ISubnegotiation, IZMP, ITType, ICompress, IEnviron, IMSSP } from "./TelnetEvent";
+import {
+  TelnetEvent,
+  TelnetEventType,
+  INegotiation,
+  IIAC,
+  IData,
+  IError,
+  ISubnegotiation,
+  IZMP,
+  ITType,
+  ICompress,
+  IEnviron,
+  IMSSP,
+} from "./TelnetEvent";
 import { EventEmitter } from "events";
 
 const telnet = require("../build/libtelnet");
@@ -19,7 +32,7 @@ export class Telnet extends EventEmitter {
     let target = Telnet.map.get(telnet);
     if (!target) throw new Error("Invalid event target.");
     const event = Telnet.getEvent(eventPointer);
-    switch(event.type) {
+    switch (event.type) {
       case TelnetEventType.DO:
       case TelnetEventType.DONT:
       case TelnetEventType.WILL:
@@ -55,7 +68,8 @@ export class Telnet extends EventEmitter {
       case TelnetEventType.MSSP: {
         return target.emit("mssp", event.mssp);
       }
-      default: return false;
+      default:
+        return false;
     }
   }
 
