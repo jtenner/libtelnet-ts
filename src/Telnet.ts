@@ -201,6 +201,14 @@ export class Telnet extends EventEmitter {
     telnet._free(ptr);
   }
 
+  subnegotiation(telopt: TelnetOption, data: Uint8Array | Buffer | number[]): void {
+    const length = data.length;
+    const pointer = telnet._malloc(length);
+    telnet.HEAPU8.set(data, pointer);
+    telnet._telnet_subnegotiation(this.pointer, telopt, pointer, length);
+    telnet._free(pointer);
+  }
+
   dispose(): void {
     this._toFree.forEach((ptr) => telnet._free(ptr));
     telnet._telnet_free(this.pointer);

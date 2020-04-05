@@ -24,9 +24,19 @@ export interface TelnetAPI {
   _telnet_recv(telnet: number, buffer: number, size: number): void;
   _telnet_send_text(telnet: number, buffer: number, length: number): void;
   _telnet_send(telnet: number, buffer: number, length: number): void;
+  _telnet_subnegotiation(
+    telnet: number,
+    telopt: TelnetOption,
+    buffer: number,
+    size: number,
+  ): void;
   HEAPU8: Uint8Array;
   lengthBytesUTF8(str: string): number;
   onRuntimeInitialized(): void;
   AsciiToMemory(ptr: number): string;
-  writeAsciiToMemory(ptr: number, str: string, notNullTerminated: boolean): void;
+  writeAsciiToMemory(
+    ptr: number,
+    str: string,
+    notNullTerminated: boolean,
+  ): void;
 }
