@@ -1,6 +1,5 @@
 import {
   TelnetEvent,
-  TelnetEventType,
   INegotiation,
   IIAC,
   IData,
@@ -11,10 +10,9 @@ import {
   ICompress,
   IEnviron,
   IMSSP,
-  TelnetOption,
 } from "./TelnetEvent";
 import { EventEmitter } from "events";
-import { consts } from "./consts";
+import { consts, TelnetFlag, TelnetOption, TelnetEventType } from "./consts";
 
 const telnet = require("../build/libtelnet");
 
@@ -111,11 +109,10 @@ export class Telnet extends EventEmitter {
 
   private pointer: number;
 
-  constructor(compatibilityTable: CompatiblityTable, flags: number) {
+  constructor(compatibilityTable: CompatiblityTable, flags: TelnetFlag) {
     super();
     const heap = new DataView(telnet.HEAPU8.buffer);
     const length = compatibilityTable.length;
-
 
     // Need to set the telopt array
 
@@ -131,7 +128,7 @@ export class Telnet extends EventEmitter {
       const entry = compatibilityTable[i];
       const entryPointer = telnet._malloc(4);
       if (entryPointer === 0) throw new Error("Out of memory.");
-      
+
       heap.setInt16(
         entryPointer + consts.telnet_telopt_t_telopt_offset,
         entry[0],
@@ -141,17 +138,17 @@ export class Telnet extends EventEmitter {
       const them: number = entry[2] ? consts.TELNET_DO : consts.TELNET_DONT;
       heap.setUint8(entryPointer + consts.telnet_telopt_t_us_offset, us);
       heap.setUint8(entryPointer + consts.telnet_telopt_t_him_offset, them);
-      
+
       // set the table entry
       heap.setUint32(arrayPointer + (i << 2), entryPointer, true);
     }
-    
+
     // create the last entry
     const finalEntryPointer = telnet._malloc(4);
     if (finalEntryPointer === 0) throw new Error("Out of memory.");
     heap.setUint32(finalEntryPointer, 0, true);
     heap.setInt16(finalEntryPointer + consts.telnet_telopt_t_telopt_offset, -1);
-    
+
     // set the last entry in the table
     heap.setUint32(arrayPointer + (length << 2), finalEntryPointer, true);
 

@@ -60,7 +60,7 @@ This table is comprised of telnet_telopt_t structures, one for each
 supported option. Each entry specifies the option supported,
 whether the option is supported locally or remotely.
 
-```
+```c
 struct telnet_telopt_t {
     short telopt;
     unsigned char us;
@@ -78,7 +78,7 @@ When definition the telopt table you must include an end marker
 entry, which is simply an entry with telopt set to -1. For
 example:
 
-```
+```c
 static const telnet_telopt_t my_telopts[] = {
     { TELNET_TELOPT_ECHO,      TELNET_WILL, TELNET_DONT },
     { TELNET_TELOPT_TTYPE,     TELNET_WILL, TELNET_DONT },
