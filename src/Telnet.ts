@@ -18,6 +18,7 @@ import {
   TelnetOption,
   TelnetEventType,
   TelnetCommand,
+  TelnetNegotiationCommand,
 } from "./consts";
 import { TelnetAPI } from "./TelnetAPI";
 
@@ -179,6 +180,10 @@ export class Telnet extends EventEmitter {
 
   iac(cmd: TelnetCommand): void {
     telnet._telnet_iac(this.pointer, cmd);
+  }
+
+  negotiate(cmd: TelnetNegotiationCommand, option: TelnetOption): void {
+    telnet._telnet_negotiate(this.pointer, cmd, option);
   }
 
   dispose(): void {

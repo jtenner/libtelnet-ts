@@ -51,6 +51,12 @@ export enum TelnetCommand {
   EOF = 236,
 }
 
+export type TelnetNegotiationCommand =
+  | TelnetCommand.DO
+  | TelnetCommand.DONT
+  | TelnetCommand.WILL
+  | TelnetCommand.WONT;
+
 export enum TelnetFlag {
   NONE = 0,
   PROXY = 1 << 0,
