@@ -167,6 +167,9 @@ export class Telnet extends EventEmitter {
 
     // finally pass the array pointer into the telnet_init function
     this.pointer = telnet._telnet_init(arrayPointer, flags, 0); // user data is null
+
+    // hook up event listener
+    Telnet.map.set(this.pointer, this);
   }
 
   receive(bytes: Uint8Array | Buffer | number[]): void {
@@ -215,5 +218,6 @@ export class Telnet extends EventEmitter {
   dispose(): void {
     this._toFree.forEach((ptr) => telnet._free(ptr));
     telnet._telnet_free(this.pointer);
+    Telnet.map.delete(this.pointer);
   }
 }
