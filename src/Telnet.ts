@@ -186,6 +186,21 @@ export class Telnet extends EventEmitter {
     telnet._telnet_negotiate(this.pointer, cmd, option);
   }
 
+  send(buffer: Uint8Array | Buffer | number[]): void {
+    const length = buffer.length;
+    const ptr = telnet._malloc(length);
+    telnet.HEAPU8.set(buffer, ptr);
+    telnet._telnet_send(this.pointer, ptr, length);
+  }
+
+  sendText(str: string): void {
+    let length = str.length + 1; // add 1 for null termination
+    let ptr = telnet._malloc(length);
+    telnet.writeAsciiToMemory(ptr, str, false);
+    telnet._telnet_send_text(this.pointer, ptr, length - 1);
+    telnet._free(ptr);
+  }
+
   dispose(): void {
     this._toFree.forEach((ptr) => telnet._free(ptr));
     telnet._telnet_free(this.pointer);

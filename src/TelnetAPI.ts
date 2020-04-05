@@ -6,22 +6,27 @@ import {
 } from "./consts";
 
 export interface TelnetAPI {
-  onRuntimeInitialized(): void;
+  _free(pointer: number): void;
   _init(): void;
   _malloc(size: number): number;
-  HEAPU8: Uint8Array;
+  _telnet_free(telnet: number): void;
+  _telnet_iac(telnet: number, cmd: TelnetCommand): void;
   _telnet_init(
     compatibilityTable: number,
     flags: TelnetFlag,
     userData: number,
   ): number;
-  _telnet_iac(telnet: number, cmd: TelnetCommand): void;
   _telnet_negotiate(
     telnet: number,
     cmd: TelnetNegotiationCommand,
     option: TelnetOption,
   ): void;
   _telnet_recv(telnet: number, buffer: number, size: number): void;
-  _telnet_free(telnet: number): void;
-  _free(pointer: number): void;
+  _telnet_send_text(telnet: number, buffer: number, length: number): void;
+  _telnet_send(telnet: number, buffer: number, length: number): void;
+  HEAPU8: Uint8Array;
+  lengthBytesUTF8(str: string): number;
+  onRuntimeInitialized(): void;
+  AsciiToMemory(ptr: number): string;
+  writeAsciiToMemory(ptr: number, str: string, notNullTerminated: boolean): void;
 }
