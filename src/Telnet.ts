@@ -13,8 +13,9 @@ import {
 } from "./TelnetEvent";
 import { EventEmitter } from "events";
 import { consts, TelnetFlag, TelnetOption, TelnetEventType } from "./consts";
+import { TelnetAPI } from "./TelnetAPI";
 
-const telnet = require("../build/libtelnet");
+const telnet = require("../build/libtelnet") as TelnetAPI;
 
 telnet.onRuntimeInitialized = function () {
   telnet._init();
@@ -161,8 +162,17 @@ export class Telnet extends EventEmitter {
     this.pointer = telnet._telnet_init(arrayPointer, flags, 0); // user data is null
   }
 
+  receive(bytes: Uint8Array | Buffer | number[]): void {
+    const bufferLength = bytes.length;
+    const bufferPointer = telnet._malloc(bufferLength);
+    if (bufferPointer === 0) throw new Error("Out of memory.");
+    telnet.HEAPU8.set(bytes, bufferPointer);
+    telnet._telnet_recv(this.pointer, bufferPointer, bufferLength);
+    telnet._free(bufferPointer);
+  }
+
   dispose(): void {
-    this._toFree.forEach(ptr => telnet._free(ptr));
+    this._toFree.forEach((ptr) => telnet._free(ptr));
     telnet._telnet_free(this.pointer);
   }
 }
