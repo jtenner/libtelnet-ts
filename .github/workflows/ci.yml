@@ -19,7 +19,7 @@ jobs:
 
       - name: install dependencies
         shell: bash
-        run: sudo apt-get install emscripten && npm ci
+        run: sudo apt-get install emscripten && npm install
 
       - name: build
         shell: bash
