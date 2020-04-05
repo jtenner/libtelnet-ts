@@ -26,6 +26,8 @@ export type CompatiblityTable = [TelnetOption, boolean, boolean][];
 export class Telnet extends EventEmitter {
   private static map = new Map<number, Telnet>();
 
+  private _toFree: number[] = [];
+
   public static route(
     telnet: number,
     eventPointer: number,
@@ -123,6 +125,7 @@ export class Telnet extends EventEmitter {
     const arraySize = (length + 1) << 2;
     const arrayPointer = telnet._malloc(arraySize);
     if (arrayPointer === 0) throw new Error("Out of memory.");
+    this._toFree.push(arrayPointer);
 
     for (let i = 0; i < length; i++) {
       const entry = compatibilityTable[i];
@@ -134,20 +137,22 @@ export class Telnet extends EventEmitter {
         entry[0],
         true,
       );
-      const us: number = entry[1] ? consts.TELNET_WILL : consts.TELNET_WONT;
-      const them: number = entry[2] ? consts.TELNET_DO : consts.TELNET_DONT;
+      const us = entry[1] ? consts.TELNET_WILL : consts.TELNET_WONT;
+      const him = entry[2] ? consts.TELNET_DO : consts.TELNET_DONT;
       heap.setUint8(entryPointer + consts.telnet_telopt_t_us_offset, us);
-      heap.setUint8(entryPointer + consts.telnet_telopt_t_him_offset, them);
+      heap.setUint8(entryPointer + consts.telnet_telopt_t_him_offset, him);
+      this._toFree.push(entryPointer);
 
       // set the table entry
       heap.setUint32(arrayPointer + (i << 2), entryPointer, true);
     }
 
-    // create the last entry
+    // create the last entry [-1, 0, 0]
     const finalEntryPointer = telnet._malloc(4);
     if (finalEntryPointer === 0) throw new Error("Out of memory.");
-    heap.setUint32(finalEntryPointer, 0, true);
+    heap.setUint32(finalEntryPointer, 0, true); // clear the memory in case
     heap.setInt16(finalEntryPointer + consts.telnet_telopt_t_telopt_offset, -1);
+    this._toFree.push(finalEntryPointer);
 
     // set the last entry in the table
     heap.setUint32(arrayPointer + (length << 2), finalEntryPointer, true);
@@ -157,6 +162,7 @@ export class Telnet extends EventEmitter {
   }
 
   dispose(): void {
+    this._toFree.forEach(ptr => telnet._free(ptr));
     telnet._telnet_free(this.pointer);
   }
 }
