@@ -1,4 +1,4 @@
-import { TelnetFlag } from "./consts";
+import { TelnetFlag, TelnetCommand } from "./consts";
 
 export interface TelnetAPI {
   onRuntimeInitialized(): void;
@@ -10,6 +10,7 @@ export interface TelnetAPI {
     flags: TelnetFlag,
     userData: number,
   ): number;
+  _telnet_iac(telnet: number, cmd: TelnetCommand): void;
   _telnet_recv(telnet: number, buffer: number, size: number): void;
   _telnet_free(telnet: number): void;
   _free(pointer: number): void;

@@ -26,26 +26,29 @@ export namespace consts {
   export let telnet_telopt_t_telopt_offset: number = 0;
   export let telnet_telopt_t_us_offset: number = 0;
   export let telnet_telopt_t_him_offset: number = 0;
-  export const TELNET_IAC = 255;
-  export const TELNET_DONT = 254;
-  export const TELNET_DO = 253;
-  export const TELNET_WONT = 252;
-  export const TELNET_WILL = 251;
-  export const TELNET_SB = 250;
-  export const TELNET_GA = 249;
-  export const TELNET_EL = 248;
-  export const TELNET_EC = 247;
-  export const TELNET_AYT = 246;
-  export const TELNET_AO = 245;
-  export const TELNET_IP = 244;
-  export const TELNET_BREAK = 243;
-  export const TELNET_DM = 242;
-  export const TELNET_NOP = 241;
-  export const TELNET_SE = 240;
-  export const TELNET_EOR = 239;
-  export const TELNET_ABORT = 238;
-  export const TELNET_SUSP = 237;
-  export const TELNET_EOF = 236;
+}
+
+export enum TelnetCommand {
+  IAC = 255,
+  DONT = 254,
+  DO = 253,
+  WONT = 252,
+  WILL = 251,
+  SB = 250,
+  GA = 249,
+  EL = 248,
+  EC = 247,
+  AYT = 246,
+  AO = 245,
+  IP = 244,
+  BREAK = 243,
+  DM = 242,
+  NOP = 241,
+  SE = 240,
+  EOR = 239,
+  ABORT = 238,
+  SUSP = 237,
+  EOF = 236,
 }
 
 export enum TelnetFlag {

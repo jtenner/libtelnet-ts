@@ -12,7 +12,13 @@ import {
   IMSSP,
 } from "./TelnetEvent";
 import { EventEmitter } from "events";
-import { consts, TelnetFlag, TelnetOption, TelnetEventType } from "./consts";
+import {
+  consts,
+  TelnetFlag,
+  TelnetOption,
+  TelnetEventType,
+  TelnetCommand,
+} from "./consts";
 import { TelnetAPI } from "./TelnetAPI";
 
 const telnet = require("../build/libtelnet") as TelnetAPI;
@@ -138,8 +144,8 @@ export class Telnet extends EventEmitter {
         entry[0],
         true,
       );
-      const us = entry[1] ? consts.TELNET_WILL : consts.TELNET_WONT;
-      const him = entry[2] ? consts.TELNET_DO : consts.TELNET_DONT;
+      const us = entry[1] ? TelnetCommand.WILL : TelnetCommand.WONT;
+      const him = entry[2] ? TelnetCommand.DO : TelnetCommand.DONT;
       heap.setUint8(entryPointer + consts.telnet_telopt_t_us_offset, us);
       heap.setUint8(entryPointer + consts.telnet_telopt_t_him_offset, him);
       this._toFree.push(entryPointer);
@@ -169,6 +175,10 @@ export class Telnet extends EventEmitter {
     telnet.HEAPU8.set(bytes, bufferPointer);
     telnet._telnet_recv(this.pointer, bufferPointer, bufferLength);
     telnet._free(bufferPointer);
+  }
+
+  iac(cmd: TelnetCommand): void {
+    telnet._telnet_iac(this.pointer, cmd);
   }
 
   dispose(): void {
