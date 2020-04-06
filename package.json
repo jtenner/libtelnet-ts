@@ -6,7 +6,7 @@
   "scripts": {
     "rimraf-build": "rimraf build",
     "mkdir-build": "mkdir build",
-    "typedoc": "typedoc src",
+    "typedoc": "typedoc src && echo \"\" > docs/.nojekyll",
     "rimraf-doc": "rimraf docs",
     "rimraf-lib": "rimraf lib",
     "compile:initial-run": "emcc",
