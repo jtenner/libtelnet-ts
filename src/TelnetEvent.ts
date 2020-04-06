@@ -34,8 +34,12 @@ function getEnvironVars(
     );
     result.push({
       type: heap.getUint8(pointer + consts.telnet_environ_t_type_offset),
-      value: telnet.AsciiToString(valueStringPointer),
-      var: telnet.AsciiToString(varStringPointer),
+      value:
+        valueStringPointer === 0
+          ? null
+          : telnet.AsciiToString(valueStringPointer),
+      var:
+        varStringPointer === 0 ? null : telnet.AsciiToString(varStringPointer),
     });
   }
 
@@ -52,9 +56,9 @@ export interface IDataEvent {
 /** An error event, can be a `TelnetEventType.WARNING` or an `TelnetEventType.ERROR`. */
 export interface IErrorEvent {
   readonly type: ErrorEventType;
-  readonly file: string;
-  readonly func: string;
-  readonly msg: string;
+  readonly file: string | null;
+  readonly func: string | null;
+  readonly msg: string | null;
   readonly line: number;
   readonly errcode: TelnetErrorCode;
 }
@@ -82,7 +86,7 @@ export interface ISubnegotiationEvent {
 /** ZMP event. */
 export interface IZMPEvent {
   readonly type: TelnetEventType.ZMP;
-  readonly argv: string[];
+  readonly argv: Array<string | null>;
   readonly argc: number;
 }
 
@@ -118,8 +122,8 @@ export enum EnvironVarType {
 /** An Environ var. */
 export interface IEnvironVar {
   readonly type: EnvironVarType;
-  readonly var: string;
-  readonly value: string;
+  readonly var: string | null;
+  readonly value: string | null;
 }
 
 /** TType Command. */
@@ -212,10 +216,10 @@ export class TelnetEvent {
 
     return {
       errcode: errcode,
-      file: telnet.AsciiToString(filePointer),
-      func: telnet.AsciiToString(funcPointer),
+      file: filePointer === 0 ? null : telnet.AsciiToString(filePointer),
+      func: funcPointer === 0 ? null : telnet.AsciiToString(funcPointer),
       line,
-      msg: telnet.AsciiToString(messagePointer),
+      msg: messagePointer === 0 ? null : telnet.AsciiToString(messagePointer),
       type: this.type as ErrorEventType,
     };
   }
@@ -304,7 +308,7 @@ export class TelnetEvent {
       pointer + consts.zmp_t_argv_offset,
       true,
     );
-    const argv: string[] = [];
+    const argv: Array<string | null> = [];
 
     for (let i = 0; i < argc; i++) {
       // dereference the pointer at argvPointer + (i << alignof<u32>())
@@ -312,7 +316,8 @@ export class TelnetEvent {
         argvPointer + (i << U32_ALIGN),
         true,
       );
-      const value = telnet.AsciiToString(stringPointer);
+      const value =
+        stringPointer === 0 ? null : telnet.AsciiToString(stringPointer);
       argv.push(value);
     }
 
