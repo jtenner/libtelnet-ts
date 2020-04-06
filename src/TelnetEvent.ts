@@ -1,18 +1,22 @@
 import {
   consts,
-  DataEvent,
+  DataEventType,
   TelnetErrorCode,
   TelnetEventType,
   TelnetOption,
-  NegotiationEvent,
+  NegotiationEventType,
   EnvironCommand,
-  ErrorEvent,
+  ErrorEventType,
+  TelnetCommand,
 } from "./consts";
+import { TelnetAPI } from "./TelnetAPI";
 
-const telnet = require("../build/libtelnet");
+/** The imported emscripten api that calls the c lib functions. */
+const telnet = require("../build/libtelnet") as TelnetAPI;
 
 const U32_ALIGN = 2;
 
+/** Collect a set of environ vars from a telnet_environ_t*. */
 function getEnvironVars(
   pointer: number,
   size: number,
@@ -40,14 +44,16 @@ function getEnvironVars(
   return result;
 }
 
-export interface IData {
-  readonly type: DataEvent;
+/** A data event. Can be incoming as `TelnetEventType.DATA` or outgoing `TelnetEventType.SEND`. */
+export interface IDataEvent {
+  readonly type: DataEventType;
   readonly buffer: Uint8Array;
   readonly size: number;
 }
 
-export interface IError {
-  readonly type: ErrorEvent;
+/** An error event, can be a `TelnetEventType.WARNING` or an `TelnetEventType.ERROR`. */
+export interface IErrorEvent {
+  readonly type: ErrorEventType;
   readonly file: string;
   readonly func: string;
   readonly msg: string;
@@ -55,47 +61,55 @@ export interface IError {
   readonly errcode: TelnetErrorCode;
 }
 
-export interface IIAC {
+/** An IAC event with the given command. */
+export interface IIACEvent {
   readonly type: TelnetEventType.IAC;
-  readonly cmd: TelnetOption;
+  readonly cmd: TelnetCommand;
 }
 
-export interface INegotiation {
-  readonly type: NegotiationEvent;
+/** A telnet negotation event of type DO, DONT, WILL, or WONT. */
+export interface INegotiationEvent {
+  readonly type: NegotiationEventType;
   readonly telopt: TelnetOption;
 }
 
-export interface ISubnegotiation {
+/** A subnegotiation with an option and a payload. */
+export interface ISubnegotiationEvent {
   readonly type: TelnetEventType.SUBNEGOTIATION;
   readonly buffer: Uint8Array;
   readonly size: number;
   readonly telopt: TelnetOption;
 }
 
-export interface IZMP {
+/** ZMP event. */
+export interface IZMPEvent {
   readonly type: TelnetEventType.ZMP;
   readonly argv: string[];
   readonly argc: number;
 }
 
-export interface ICompress {
+/** A compression event. */
+export interface ICompressEvent {
   readonly type: TelnetEventType.COMPRESS;
   readonly state: boolean;
 }
 
-export interface IEnviron {
+/** An environ event, with a set of IEnvironVar values and an Environ Command. */
+export interface IEnvironEvent {
   readonly type: TelnetEventType.ENVIRON;
   readonly values: IEnvironVar[];
   readonly size: number;
   readonly cmd: EnvironCommand;
 }
 
-export interface IMSSP {
+/** An MSSPEvent. */
+export interface IMSSPEvent {
   readonly type: TelnetEventType.MSSP;
   readonly values: IEnvironVar[];
   readonly size: number;
 }
 
+/** The environ var types. */
 export enum EnvironVarType {
   VAR = 0,
   VALUE = 1,
@@ -103,25 +117,34 @@ export enum EnvironVarType {
   USERVAR = 3,
 }
 
+/** An Environ var. */
 export interface IEnvironVar {
   readonly type: EnvironVarType;
   readonly var: string;
   readonly value: string;
 }
 
-export enum TType {
+/** TType Command. */
+export enum TTypeCommand {
   IS = 0,
   SEND = 1,
 }
 
+/** A TType event. */
 export interface ITType {
   readonly type: TelnetEventType.TTYPE;
-  readonly cmd: TType;
+  readonly cmd: TTypeCommand;
   readonly name: string;
 }
 
+/**
+ * A basis for all telnet events. Internal use only. It uses the internal
+ * properties to "Cast" the event to the appropriate type.
+ */
 export class TelnetEvent {
+  /** The telnet event type. */
   public type: TelnetEventType;
+
   public constructor(public pointer: number, private heap: DataView) {
     this.type = heap.getUint32(pointer, true);
   }
@@ -130,12 +153,12 @@ export class TelnetEvent {
    * Interpret this event as a data event. Either TelnetEventType.{Data | Send}.
    *
    * struct data_t {
-   *   enum telnet_event_type_t _type;
-   *   const char *buffer;
-   *   size_t size;
+   *   enum telnet_event_type_t _type; -> EventType
+   *   const char *buffer; -> string
+   *   size_t size; -> number
    * } data;
    */
-  public get data(): IData {
+  public get data(): IDataEvent {
     const pointer = this.pointer;
     const bufferPointer = this.heap.getUint32(
       pointer + consts.data_t_buffer_offset,
@@ -146,7 +169,7 @@ export class TelnetEvent {
       true,
     );
     return {
-      type: this.type as DataEvent,
+      type: this.type as DataEventType,
       buffer: new Uint8Array(
         this.heap.buffer.slice(bufferPointer, bufferPointer + bufferLength),
       ),
@@ -156,8 +179,17 @@ export class TelnetEvent {
 
   /**
    * Interpret this event as an error.
+   *
+   * struct error_t {
+   *   enum telnet_event_type_t _type; -> TelnetEventType
+   *   const char *file; -> string
+   *   const char *func; -> string
+   *   const char *msg; -> string
+   *   int line; -> number
+   *   telnet_error_t errcode; -> TelnetErrorCode
+   * } error;
    */
-  public get error(): IError {
+  public get error(): IErrorEvent {
     const heap = this.heap;
     const filePointer = heap.getUint32(
       this.pointer + consts.error_t_file_offset,
@@ -179,27 +211,55 @@ export class TelnetEvent {
       func: telnet.UTF8ToString(funcPointer),
       line,
       msg: telnet.UTF8ToString(messagePointer),
-      type: this.type as ErrorEvent,
+      type: this.type as ErrorEventType,
     };
   }
 
-  public get iac(): IIAC {
+  /**
+   * Interpret this event as an IAC (Interpret as Command)
+   *
+   * struct iac_t {
+   *   enum telnet_event_type_t _type; -> TelnetEventType
+   *   unsigned char cmd; -> TelnetOption
+   * } iac;
+   */
+  public get iac(): IIACEvent {
     return {
       type: this.type as TelnetEventType.IAC,
-      cmd: this.heap.getUint8(this.pointer + consts.iac_t_cmd_offset),
+      cmd: this.heap.getUint8(
+        this.pointer + consts.iac_t_cmd_offset,
+      ) as TelnetCommand,
     };
   }
 
-  public get negotiate(): INegotiation {
+  /**
+   * Interpret this event as a Negotiation event. I.E. DO, DONT, WILL, WONT
+   *
+   * struct negotiate_t {
+   *   enum telnet_event_type_t _type; -> TelnetEventType
+   *   unsigned char telopt; -> TelnetOption
+   * } neg;
+   */
+  public get negotiate(): INegotiationEvent {
     return {
-      type: this.type as NegotiationEvent,
+      type: this.type as NegotiationEventType,
       telopt: this.heap.getUint8(
         this.pointer + consts.negotiate_t_telopt_offset,
       ),
     };
   }
 
-  public get subnegotiate(): ISubnegotiation {
+  /**
+   * Interpret this event as a subnegotiation.
+   *
+   * struct subnegotiation_t {
+   *   enum telnet_event_type_t _type; -> TelnetEventType
+   *   const char *buffer; -> Uint8Array
+   *   size_t size; -> number
+   *   unsigned char telopt; -> TelnetOption
+   * } sub;
+   */
+  public get sub(): ISubnegotiationEvent {
     const heap = this.heap;
     const pointer = this.pointer;
     const bufferPointer = heap.getUint32(
@@ -217,7 +277,16 @@ export class TelnetEvent {
     };
   }
 
-  public get zmp(): IZMP {
+  /**
+   * Interpret this event as a ZMP event.
+   *
+   * struct zmp_t {
+   *   enum telnet_event_type_t _type; -> TelnetEventType
+   *   const char **argv; -> string[]
+   *   size_t argc; -> number
+   * } zmp;
+   */
+  public get zmp(): IZMPEvent {
     const heap = this.heap;
     const pointer = this.pointer;
     const argc = heap.getUint32(pointer + consts.zmp_t_argc_offset);
@@ -239,10 +308,21 @@ export class TelnetEvent {
     };
   }
 
+  /**
+   * Interpret this event as a TType event.
+   *
+   * struct ttype_t {
+   *   enum telnet_event_type_t _type; -> TelnetEventType
+   *   unsigned char cmd; -> TTypeCommand
+   *   const char* name; -> string
+   * } ttype;
+   */
   public get ttype(): ITType {
     const heap = this.heap;
     const pointer = this.pointer;
-    const cmd: TType = heap.getUint8(pointer + consts.ttype_t_cmd_offset);
+    const cmd: TTypeCommand = heap.getUint8(
+      pointer + consts.ttype_t_cmd_offset,
+    );
     const namePointer = heap.getUint8(pointer + consts.ttype_t_name_offset);
     return {
       cmd,
@@ -251,7 +331,15 @@ export class TelnetEvent {
     };
   }
 
-  public get compress(): ICompress {
+  /**
+   * Interpet this event as a Compress event.
+   *
+   * struct compress_T {
+   *   enum telnet_event_type_t _type; -> TelnetEventType
+   *   unsigned char state; -> boolean
+   * } compress;
+   */
+  public get compress(): ICompressEvent {
     return {
       type: this.type as TelnetEventType.COMPRESS,
       state:
@@ -259,7 +347,17 @@ export class TelnetEvent {
     };
   }
 
-  public get environ(): IEnviron {
+  /**
+   * Interpret this event as an Environ event.
+   *
+   * struct environ_t {
+   *   enum telnet_event_type_t _type; -> TelnetEventType
+   *   const struct telnet_environ_t *values; -> IEnvironVar[]
+   *   size_t size; -> number
+   *   unsigned char cmd; -> EnvironCommand
+   * } environ;
+   */
+  public get environ(): IEnvironEvent {
     const pointer = this.pointer;
     const heap = this.heap;
     const cmd: EnvironCommand = heap.getUint8(
@@ -279,7 +377,16 @@ export class TelnetEvent {
     };
   }
 
-  public get mssp(): IMSSP {
+  /**
+   * Interpret this event as a MSSP event.
+   *
+   * struct mssp_t {
+   *   enum telnet_event_type_t _type; -> TelnetEventType
+   *   const struct telnet_environ_t *values; -> IEnvironVar[]
+   *   size_t size; -> number
+   * } mssp;
+   */
+  public get mssp(): IMSSPEvent {
     const pointer = this.pointer;
     const heap = this.heap;
     const size = heap.getUint32(pointer + consts.environ_t_size_offset);

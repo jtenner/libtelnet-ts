@@ -33,7 +33,8 @@ export interface TelnetAPI {
   HEAPU8: Uint8Array;
   lengthBytesUTF8(str: string): number;
   onRuntimeInitialized(): void;
-  AsciiToMemory(ptr: number): string;
+  UTF8ToString(ptr: number): string;
+  AsciiToString(ptr: number): string;
   writeAsciiToMemory(
     ptr: number,
     str: string,
