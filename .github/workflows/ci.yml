@@ -19,15 +19,7 @@ jobs:
 
       - name: install dependencies
         shell: bash
-        run:
-          - git clone https://github.com/emscripten-core/emsdk.git
-          - cd emsdk
-          - ./emsdk install latest
-          - ./emsdk activate latest
-          - source ./emsdk_env.sh
-          - cd ..
-          - sudo apt-get install python2.7 cmake default-jre
-          - npm ci
+        run: git clone https://github.com/emscripten-core/emsdk.git && cd emsdk && ./emsdk install latest && ./emsdk activate latest && source ./emsdk_env.sh && cd .. && sudo apt-get install python2.7 cmake default-jre && npm ci
 
       - name: build
         shell: bash
