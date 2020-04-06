@@ -1,3 +1,5 @@
-# Test a single IAC command (IAC GA)
-
+# IAC GA
 %FF%F9
+
+# IAC DO BINARY
+%FF%FD%00
