@@ -64,7 +64,7 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
   },
   "typedocOptions": {
-    "mode": "modules",
+    "mode": "file",
     "out": "docs"
   },
   "include": ["src"]
