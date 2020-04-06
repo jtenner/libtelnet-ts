@@ -342,9 +342,11 @@ export class TelnetEvent {
       pointer + consts.ttype_t_name_offset,
       true,
     );
+
+    const name = namePointer === 0 ? "" : telnet.AsciiToString(namePointer);
     return {
       cmd,
-      name: telnet.AsciiToString(namePointer),
+      name,
       type: this.type as TelnetEventType.TTYPE,
     };
   }
