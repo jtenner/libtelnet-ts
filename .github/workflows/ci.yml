@@ -23,7 +23,7 @@ jobs:
 
       - name: build
         shell: bash
-        run: npm run build:${{ matrix.config }}
+        run: emcc && npm run build:${{ matrix.config }}
 
       - name: test
         shell: bash
