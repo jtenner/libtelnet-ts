@@ -1,0 +1,13 @@
+Subnegotiation: MSSP 
+Subnegotiation: MSSP 1,70,79,79,2,66,65,82
+MSSP:
+  Var: FOO | Value: BAR
+Subnegotiation: MSSP 1,70,79,79,2,66,65,82,2,66,65,90
+MSSP:
+  Var: FOO | Value: BAR
+  Var: FOO | Value: BAZ
+Subnegotiation: MSSP 1,70,79,79,1,66,65,82,1,66,65,90
+MSSP:
+Subnegotiation: MSSP 1,70,79,79,2,66,65,82,1,66,65,90
+MSSP:
+  Var: FOO | Value: BAR

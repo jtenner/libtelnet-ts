@@ -23,21 +23,19 @@ function getEnvironVars(
   heap: DataView,
 ): IEnvironVar[] {
   const result: IEnvironVar[] = [];
-
-  for (let i = 0; i < size; i++) {
-    const environVarPointer = heap.getUint32(pointer + (i << U32_ALIGN));
+  for (let i = 0; i < size; i++, pointer += 12) {
     const valueStringPointer = heap.getUint32(
-      environVarPointer + consts.telnet_environ_t_value_offset,
+      pointer + consts.telnet_environ_t_value_offset,
+      true,
     );
     const varStringPointer = heap.getUint32(
-      environVarPointer + consts.telnet_environ_t_var_offset,
+      pointer + consts.telnet_environ_t_var_offset,
+      true,
     );
     result.push({
-      type: heap.getUint8(
-        environVarPointer + consts.telnet_environ_t_type_offset,
-      ),
-      value: telnet.UTF8ToString(valueStringPointer),
-      var: telnet.UTF8ToString(varStringPointer),
+      type: heap.getUint8(pointer + consts.telnet_environ_t_type_offset),
+      value: telnet.AsciiToString(valueStringPointer),
+      var: telnet.AsciiToString(varStringPointer),
     });
   }
 
@@ -193,24 +191,31 @@ export class TelnetEvent {
     const heap = this.heap;
     const filePointer = heap.getUint32(
       this.pointer + consts.error_t_file_offset,
+      true,
     );
     const funcPointer = heap.getUint32(
       this.pointer + consts.error_t_func_offset,
+      true,
     );
     const messagePointer = heap.getUint32(
       this.pointer + consts.error_t_msg_offset,
+      true,
     );
-    const line = heap.getUint32(this.pointer + consts.error_t_line_offset);
+    const line = heap.getUint32(
+      this.pointer + consts.error_t_line_offset,
+      true,
+    );
     const errcode: TelnetErrorCode = heap.getUint32(
       this.pointer + consts.error_t_errcode_offset,
+      true,
     );
 
     return {
       errcode: errcode,
-      file: telnet.UTF8ToString(filePointer),
-      func: telnet.UTF8ToString(funcPointer),
+      file: telnet.AsciiToString(filePointer),
+      func: telnet.AsciiToString(funcPointer),
       line,
-      msg: telnet.UTF8ToString(messagePointer),
+      msg: telnet.AsciiToString(messagePointer),
       type: this.type as ErrorEventType,
     };
   }
@@ -264,8 +269,12 @@ export class TelnetEvent {
     const pointer = this.pointer;
     const bufferPointer = heap.getUint32(
       pointer + consts.subnegotiate_t_buffer_offset,
+      true,
     );
-    const size = heap.getUint32(pointer + consts.subnegotiate_t_size_offset);
+    const size = heap.getUint32(
+      pointer + consts.subnegotiate_t_size_offset,
+      true,
+    );
     const telopt: TelnetOption = heap.getUint8(
       pointer + consts.subnegotiate_t_telopt_offset,
     );
@@ -289,15 +298,21 @@ export class TelnetEvent {
   public get zmp(): IZMPEvent {
     const heap = this.heap;
     const pointer = this.pointer;
-    const argc = heap.getUint32(pointer + consts.zmp_t_argc_offset);
+    const argc = heap.getUint32(pointer + consts.zmp_t_argc_offset, true);
     // pointer + argv_offset is the memory location for the array of pointers
-    const argvPointer = heap.getUint32(pointer + consts.zmp_t_argv_offset);
+    const argvPointer = heap.getUint32(
+      pointer + consts.zmp_t_argv_offset,
+      true,
+    );
     const argv: string[] = [];
 
     for (let i = 0; i < argc; i++) {
       // dereference the pointer at argvPointer + (i << alignof<u32>())
-      const stringPointer = heap.getUint32(argvPointer + (i << U32_ALIGN));
-      const value = telnet.UTF8ToString(stringPointer);
+      const stringPointer = heap.getUint32(
+        argvPointer + (i << U32_ALIGN),
+        true,
+      );
+      const value = telnet.AsciiToString(stringPointer);
       argv.push(value);
     }
 
@@ -323,10 +338,15 @@ export class TelnetEvent {
     const cmd: TTypeCommand = heap.getUint8(
       pointer + consts.ttype_t_cmd_offset,
     );
-    const namePointer = heap.getUint8(pointer + consts.ttype_t_name_offset);
+    const namePointer = heap.getUint32(
+      pointer + consts.ttype_t_name_offset,
+      true,
+    );
+
+    const name = namePointer === 0 ? "" : telnet.AsciiToString(namePointer);
     return {
       cmd,
-      name: telnet.UTF8ToString(namePointer),
+      name,
       type: this.type as TelnetEventType.TTYPE,
     };
   }
@@ -363,9 +383,10 @@ export class TelnetEvent {
     const cmd: EnvironCommand = heap.getUint8(
       pointer + consts.environ_t_cmd_offset,
     );
-    const size = heap.getUint32(pointer + consts.environ_t_size_offset);
+    const size = heap.getUint32(pointer + consts.environ_t_size_offset, true);
     const valuesPointer = heap.getUint32(
       pointer + consts.environ_t_values_offset,
+      true,
     );
     const values = getEnvironVars(valuesPointer, size, heap);
 
@@ -389,9 +410,10 @@ export class TelnetEvent {
   public get mssp(): IMSSPEvent {
     const pointer = this.pointer;
     const heap = this.heap;
-    const size = heap.getUint32(pointer + consts.environ_t_size_offset);
+    const size = heap.getUint32(pointer + consts.mssp_t_size_offset, true);
     const valuesPointer = heap.getUint32(
-      pointer + consts.environ_t_values_offset,
+      pointer + consts.mssp_t_values_offset,
+      true,
     );
     const values = getEnvironVars(valuesPointer, size, heap);
 

@@ -23,6 +23,8 @@ export namespace consts {
   export let telnet_environ_t_type_offset: number = 0;
   export let telnet_environ_t_var_offset: number = 0;
   export let telnet_environ_t_value_offset: number = 0;
+  export let mssp_t_values_offset: number = 0;
+  export let mssp_t_size_offset: number = 0;
   export let telnet_telopt_t_telopt_offset: number = 0;
   export let telnet_telopt_t_us_offset: number = 0;
   export let telnet_telopt_t_him_offset: number = 0;
