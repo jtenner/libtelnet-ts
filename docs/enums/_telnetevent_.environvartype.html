@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IMSSPEvent | libtelnet-ts</title>
+	<title>EnvironVarType | libtelnet-ts</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -59,10 +59,10 @@
 					<a href="../modules/_telnetevent_.html">&quot;TelnetEvent&quot;</a>
 				</li>
 				<li>
-					<a href="_telnetevent_.imsspevent.html">IMSSPEvent</a>
+					<a href="_telnetevent_.environvartype.html">EnvironVarType</a>
 				</li>
 			</ul>
-			<h1>Interface IMSSPEvent</h1>
+			<h1>Enumeration EnvironVarType</h1>
 		</div>
 	</div>
 </header>
@@ -72,62 +72,65 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>An MSSPEvent.</p>
+						<p>The environ var types.</p>
 					</div>
 				</div>
-			</section>
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<span class="target">IMSSPEvent</span>
-					</li>
-				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.imsspevent.html#size" class="tsd-kind-icon">size</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.imsspevent.html#type" class="tsd-kind-icon">type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.imsspevent.html#values" class="tsd-kind-icon">values</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_telnetevent_.environvartype.html#esc" class="tsd-kind-icon">ESC</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_telnetevent_.environvartype.html#uservar" class="tsd-kind-icon">USERVAR</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_telnetevent_.environvartype.html#value" class="tsd-kind-icon">VALUE</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_telnetevent_.environvartype.html#var" class="tsd-kind-icon">VAR</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="size" class="tsd-anchor"></a>
-					<h3>size</h3>
-					<div class="tsd-signature tsd-kind-icon">size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<h2>Enumeration members</h2>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="esc" class="tsd-anchor"></a>
+					<h3>ESC</h3>
+					<div class="tsd-signature tsd-kind-icon">ESC<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 2</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/TelnetEvent.ts:111</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/5b15f4e/src/TelnetEvent.ts#L118">src/TelnetEvent.ts:118</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="type" class="tsd-anchor"></a>
-					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/_consts_.telneteventtype.html#mssp" class="tsd-signature-type">MSSP</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="uservar" class="tsd-anchor"></a>
+					<h3>USERVAR</h3>
+					<div class="tsd-signature tsd-kind-icon">USERVAR<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 3</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/TelnetEvent.ts:109</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/5b15f4e/src/TelnetEvent.ts#L119">src/TelnetEvent.ts:119</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="values" class="tsd-anchor"></a>
-					<h3>values</h3>
-					<div class="tsd-signature tsd-kind-icon">values<span class="tsd-signature-symbol">:</span> <a href="_telnetevent_.ienvironvar.html" class="tsd-signature-type">IEnvironVar</a><span class="tsd-signature-symbol">[]</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="value" class="tsd-anchor"></a>
+					<h3>VALUE</h3>
+					<div class="tsd-signature tsd-kind-icon">VALUE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 1</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/TelnetEvent.ts:110</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/5b15f4e/src/TelnetEvent.ts#L117">src/TelnetEvent.ts:117</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="var" class="tsd-anchor"></a>
+					<h3>VAR</h3>
+					<div class="tsd-signature tsd-kind-icon">VAR<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 0</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/5b15f4e/src/TelnetEvent.ts#L116">src/TelnetEvent.ts:116</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -158,62 +161,65 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="../enums/_telnetevent_.environvartype.html" class="tsd-kind-icon">Environ<wbr>Var<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="../enums/_telnetevent_.ttypecommand.html" class="tsd-kind-icon">TType<wbr>Command</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_telnetevent_.telnetevent.html" class="tsd-kind-icon">Telnet<wbr>Event</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_telnetevent_.icompressevent.html" class="tsd-kind-icon">ICompress<wbr>Event</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_telnetevent_.idataevent.html" class="tsd-kind-icon">IData<wbr>Event</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_telnetevent_.ienvironevent.html" class="tsd-kind-icon">IEnviron<wbr>Event</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_telnetevent_.ienvironvar.html" class="tsd-kind-icon">IEnviron<wbr>Var</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_telnetevent_.ierrorevent.html" class="tsd-kind-icon">IError<wbr>Event</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_telnetevent_.iiacevent.html" class="tsd-kind-icon">IIACEvent</a>
-					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-module">
-						<a href="_telnetevent_.imsspevent.html" class="tsd-kind-icon">IMSSPEvent</a>
+					<li class="current tsd-kind-enum tsd-parent-kind-module">
+						<a href="_telnetevent_.environvartype.html" class="tsd-kind-icon">Environ<wbr>Var<wbr>Type</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_telnetevent_.imsspevent.html#size" class="tsd-kind-icon">size</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_telnetevent_.environvartype.html#esc" class="tsd-kind-icon">ESC</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_telnetevent_.imsspevent.html#type" class="tsd-kind-icon">type</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_telnetevent_.environvartype.html#uservar" class="tsd-kind-icon">USERVAR</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_telnetevent_.imsspevent.html#values" class="tsd-kind-icon">values</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_telnetevent_.environvartype.html#value" class="tsd-kind-icon">VALUE</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_telnetevent_.environvartype.html#var" class="tsd-kind-icon">VAR</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_telnetevent_.inegotiationevent.html" class="tsd-kind-icon">INegotiation<wbr>Event</a>
+					<li class=" tsd-kind-enum tsd-parent-kind-module">
+						<a href="_telnetevent_.ttypecommand.html" class="tsd-kind-icon">TType<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_telnetevent_.telnetevent.html" class="tsd-kind-icon">Telnet<wbr>Event</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_telnetevent_.isubnegotiationevent.html" class="tsd-kind-icon">ISubnegotiation<wbr>Event</a>
+						<a href="../interfaces/_telnetevent_.icompressevent.html" class="tsd-kind-icon">ICompress<wbr>Event</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_telnetevent_.ittype.html" class="tsd-kind-icon">ITType</a>
+						<a href="../interfaces/_telnetevent_.idataevent.html" class="tsd-kind-icon">IData<wbr>Event</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_telnetevent_.izmpevent.html" class="tsd-kind-icon">IZMPEvent</a>
+						<a href="../interfaces/_telnetevent_.ienvironevent.html" class="tsd-kind-icon">IEnviron<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_telnetevent_.ienvironvar.html" class="tsd-kind-icon">IEnviron<wbr>Var</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_telnetevent_.ierrorevent.html" class="tsd-kind-icon">IError<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_telnetevent_.iiacevent.html" class="tsd-kind-icon">IIACEvent</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_telnetevent_.imsspevent.html" class="tsd-kind-icon">IMSSPEvent</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_telnetevent_.inegotiationevent.html" class="tsd-kind-icon">INegotiation<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_telnetevent_.isubnegotiationevent.html" class="tsd-kind-icon">ISubnegotiation<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_telnetevent_.ittype.html" class="tsd-kind-icon">ITType</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_telnetevent_.izmpevent.html" class="tsd-kind-icon">IZMPEvent</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
 						<a href="../modules/_telnetevent_.html#u32_align" class="tsd-kind-icon">U32_<wbr>ALIGN</a>
@@ -240,11 +246,10 @@
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>

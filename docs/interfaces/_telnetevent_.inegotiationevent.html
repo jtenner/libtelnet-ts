@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ICompressEvent | libtelnet-ts</title>
+	<title>INegotiationEvent | libtelnet-ts</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -59,10 +59,10 @@
 					<a href="../modules/_telnetevent_.html">&quot;TelnetEvent&quot;</a>
 				</li>
 				<li>
-					<a href="_telnetevent_.icompressevent.html">ICompressEvent</a>
+					<a href="_telnetevent_.inegotiationevent.html">INegotiationEvent</a>
 				</li>
 			</ul>
-			<h1>Interface ICompressEvent</h1>
+			<h1>Interface INegotiationEvent</h1>
 		</div>
 	</div>
 </header>
@@ -72,7 +72,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>A compression event.</p>
+						<p>A telnet negotation event of type DO, DONT, WILL, or WONT.</p>
 					</div>
 				</div>
 			</section>
@@ -80,7 +80,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ICompressEvent</span>
+						<span class="target">INegotiationEvent</span>
 					</li>
 				</ul>
 			</section>
@@ -91,8 +91,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.icompressevent.html#state" class="tsd-kind-icon">state</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.icompressevent.html#type" class="tsd-kind-icon">type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.inegotiationevent.html#telopt" class="tsd-kind-icon">telopt</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.inegotiationevent.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
 						</section>
 					</div>
@@ -101,22 +101,22 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="state" class="tsd-anchor"></a>
-					<h3>state</h3>
-					<div class="tsd-signature tsd-kind-icon">state<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<a name="telopt" class="tsd-anchor"></a>
+					<h3>telopt</h3>
+					<div class="tsd-signature tsd-kind-icon">telopt<span class="tsd-signature-symbol">:</span> <a href="../enums/_consts_.telnetoption.html" class="tsd-signature-type">TelnetOption</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/TelnetEvent.ts:96</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/5b15f4e/src/TelnetEvent.ts#L75">src/TelnetEvent.ts:75</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="type" class="tsd-anchor"></a>
 					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/_consts_.telneteventtype.html#compress" class="tsd-signature-type">COMPRESS</a></div>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../modules/_consts_.html#negotiationeventtype" class="tsd-signature-type">NegotiationEventType</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/TelnetEvent.ts:95</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/5b15f4e/src/TelnetEvent.ts#L74">src/TelnetEvent.ts:74</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -156,21 +156,9 @@
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="../classes/_telnetevent_.telnetevent.html" class="tsd-kind-icon">Telnet<wbr>Event</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-module">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.icompressevent.html" class="tsd-kind-icon">ICompress<wbr>Event</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_telnetevent_.icompressevent.html#state" class="tsd-kind-icon">state</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_telnetevent_.icompressevent.html#type" class="tsd-kind-icon">type</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.idataevent.html" class="tsd-kind-icon">IData<wbr>Event</a>
 					</li>
@@ -189,9 +177,21 @@
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.imsspevent.html" class="tsd-kind-icon">IMSSPEvent</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.inegotiationevent.html" class="tsd-kind-icon">INegotiation<wbr>Event</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_telnetevent_.inegotiationevent.html#telopt" class="tsd-kind-icon">telopt</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_telnetevent_.inegotiationevent.html#type" class="tsd-kind-icon">type</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.isubnegotiationevent.html" class="tsd-kind-icon">ISubnegotiation<wbr>Event</a>
 					</li>

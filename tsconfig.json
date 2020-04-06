@@ -65,7 +65,7 @@
   },
   "typedocOptions": {
     "mode": "modules",
-    "out": "doc"
+    "out": "docs"
   },
   "include": ["src"]
 }
