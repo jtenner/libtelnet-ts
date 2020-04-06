@@ -14,8 +14,6 @@ import { TelnetAPI } from "./TelnetAPI";
 /** The imported emscripten api that calls the c lib functions. */
 const telnet = require("../build/libtelnet") as TelnetAPI;
 
-const U32_ALIGN = 2;
-
 /** Collect a set of environ vars from a telnet_environ_t*. */
 function getEnvironVars(
   pointer: number,
@@ -313,7 +311,7 @@ export class TelnetEvent {
     for (let i = 0; i < argc; i++) {
       // dereference the pointer at argvPointer + (i << alignof<u32>())
       const stringPointer = heap.getUint32(
-        argvPointer + (i << U32_ALIGN),
+        argvPointer + (i << consts.U32_ALIGN),
         true,
       );
       const value =

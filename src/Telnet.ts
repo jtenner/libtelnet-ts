@@ -13,7 +13,6 @@ import {
 } from "./TelnetEvent";
 import { EventEmitter } from "events";
 import {
-  consts,
   TelnetFlag,
   TelnetOption,
   TelnetEventType,
@@ -21,10 +20,9 @@ import {
   TelnetNegotiationCommand,
 } from "./consts";
 import { TelnetAPI } from "./TelnetAPI";
+import { CompatibilityTable } from "./CompatibilityTable";
 
 const telnet = require("../build/libtelnet") as TelnetAPI;
-
-export type CompatiblityTable = [TelnetOption, boolean, boolean][];
 
 /**
  * A state machine that implements the telnet specification and calls out into
@@ -164,73 +162,11 @@ export class Telnet extends EventEmitter {
   /** This is an internal pointer to the heap where the telnet object is contained in c. */
   private pointer: number;
 
-  constructor(compatibilityTable: CompatiblityTable, flags: TelnetFlag) {
+  constructor(compatibilityTable: CompatibilityTable, flags: TelnetFlag) {
     super();
 
-    // TODO: make the CompatibilityTable interface more user friendly.
-
-    // collect a reference to the heap and how long the table needs to be
-    const heap = new DataView(telnet.HEAPU8.buffer);
-    const length = compatibilityTable.length;
-
-    // Create a set of telnet_telopt_t references ending with an additional [-1, 0, 0]
-
-    // telnet_telopt_t shape (4 bytes)
-    // short telopt
-    // unsigned char us
-    // unsigned char him
-
-    // the array size must contain (length + 1) * u32_size bytes
-    const arraySize = (length + 1) << 2;
-    // allocate the array
-    const arrayPointer = telnet._malloc(arraySize);
-    if (arrayPointer === 0) throw new Error("Out of memory.");
-
-    // add the array to the auto-free pointers when this telnet is destroyed
-    this._toFree.push(arrayPointer);
-
-    // for each entry in the compatibility table
-    for (let i = 0; i < length; i++) {
-      const entry = compatibilityTable[i];
-
-      // allocate 4 bytes, [i16, u8, u8]
-      const entryPointer = telnet._malloc(4);
-      if (entryPointer === 0) throw new Error("Out of memory.");
-
-      // set the telopt option value
-      heap.setInt16(
-        entryPointer + consts.telnet_telopt_t_telopt_offset,
-        entry[0],
-        true,
-      );
-
-      // should be set to WILL/WONT
-      const us = entry[1] ? TelnetCommand.WILL : TelnetCommand.WONT;
-      heap.setUint8(entryPointer + consts.telnet_telopt_t_us_offset, us);
-
-      // should be set to DO/DONT
-      const him = entry[2] ? TelnetCommand.DO : TelnetCommand.DONT;
-      heap.setUint8(entryPointer + consts.telnet_telopt_t_him_offset, him);
-
-      // each entry should be freed at some point
-      this._toFree.push(entryPointer);
-
-      // set the table entry at the next index
-      heap.setUint32(arrayPointer + (i << 2), entryPointer, true);
-    }
-
-    // create the last entry [-1, 0, 0]
-    const finalEntryPointer = telnet._malloc(4);
-    if (finalEntryPointer === 0) throw new Error("Out of memory.");
-    heap.setUint32(finalEntryPointer, 0, true); // clear the memory in case
-    heap.setInt16(finalEntryPointer + consts.telnet_telopt_t_telopt_offset, -1);
-    this._toFree.push(finalEntryPointer);
-
-    // set the last entry in the table
-    heap.setUint32(arrayPointer + (length << 2), finalEntryPointer, true);
-
     // finally pass the array pointer into the telnet_init function
-    this.pointer = telnet._telnet_init(arrayPointer, flags, 0); // user data is null
+    this.pointer = telnet._telnet_init(compatibilityTable.pointer, flags, 0); // user data is null
 
     // hook up event listener
     Telnet.map.set(this.pointer, this);
