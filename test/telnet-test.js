@@ -6,20 +6,13 @@ const {
   TelnetErrorCode,
   TTypeCommand,
   EnvironCommand,
+  CompatibilityTable,
 } = require("../lib");
 
 const glob = require("glob");
 const fs = require("fs");
 const path = require("path");
 const diff = require("diff");
-
-const teloptSupport = [
-  [TelnetOption.TELNET_TELOPT_COMPRESS2, true, false],
-  [TelnetOption.TELNET_TELOPT_ZMP, true, false],
-  [TelnetOption.TELNET_TELOPT_MSSP, true, false],
-  [TelnetOption.TELNET_TELOPT_NEW_ENVIRON, true, false],
-  [TelnetOption.TELNET_TELOPT_TTYPE, true, false],
-];
 
 function bytesToString(bytes) {
   return `"` + Buffer.from(bytes).toString().replace(/"/g, `\\"`) + `"`;
@@ -40,6 +33,14 @@ const inputFiles = glob.sync("test/*.input");
 const createSnap = process.argv.includes("--create");
 
 Telnet.ready.then(() => {
+  const teloptSupport = CompatibilityTable.create()
+    .support(TelnetOption.TELNET_TELOPT_COMPRESS2, true, false)
+    .support(TelnetOption.TELNET_TELOPT_ZMP, true, false)
+    .support(TelnetOption.TELNET_TELOPT_MSSP, true, false)
+    .support(TelnetOption.TELNET_TELOPT_NEW_ENVIRON, true, false)
+    .support(TelnetOption.TELNET_TELOPT_TTYPE, true, false)
+    .create();
+
   inputFiles.forEach((file) => {
     const writable = createWritable();
     const contents = fs.readFileSync(file, "utf8");

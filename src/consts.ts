@@ -28,6 +28,8 @@ export namespace consts {
   export let telnet_telopt_t_telopt_offset: number = 0;
   export let telnet_telopt_t_us_offset: number = 0;
   export let telnet_telopt_t_him_offset: number = 0;
+
+  export const U32_ALIGN = 2;
 }
 
 export enum TelnetCommand {
