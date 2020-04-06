@@ -7,7 +7,7 @@
     "rimraf-build": "rimraf build",
     "mkdir-build": "mkdir build",
     "typedoc": "typedoc src",
-    "rimraf-doc": "rimraf docs",
+    "rimraf-doc": "rimraf docs && touch .nojekyll",
     "rimraf-lib": "rimraf lib",
     "compile:initial-run": "emcc",
     "compile:release": "emcc -O2 libtelnet.c -s EXTRA_EXPORTED_RUNTIME_METHODS='[\"UTF8ToString\",\"stringToUTF8\",\"lengthBytesUTF8\",\"AsciiToString\",\"writeAsciiToMemory\"]' -s EXPORTED_FUNCTIONS=@libtelnet.exports -o build/libtelnet.js",
