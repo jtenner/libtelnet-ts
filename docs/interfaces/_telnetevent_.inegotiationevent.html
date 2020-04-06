@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IMSSPEvent | libtelnet-ts</title>
+	<title>INegotiationEvent | libtelnet-ts</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -59,10 +59,10 @@
 					<a href="../modules/_telnetevent_.html">&quot;TelnetEvent&quot;</a>
 				</li>
 				<li>
-					<a href="_telnetevent_.imsspevent.html">IMSSPEvent</a>
+					<a href="_telnetevent_.inegotiationevent.html">INegotiationEvent</a>
 				</li>
 			</ul>
-			<h1>Interface IMSSPEvent</h1>
+			<h1>Interface INegotiationEvent</h1>
 		</div>
 	</div>
 </header>
@@ -72,7 +72,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>An MSSPEvent.</p>
+						<p>A telnet negotation event of type DO, DONT, WILL, or WONT.</p>
 					</div>
 				</div>
 			</section>
@@ -80,7 +80,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">IMSSPEvent</span>
+						<span class="target">INegotiationEvent</span>
 					</li>
 				</ul>
 			</section>
@@ -91,9 +91,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.imsspevent.html#size" class="tsd-kind-icon">size</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.imsspevent.html#type" class="tsd-kind-icon">type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.imsspevent.html#values" class="tsd-kind-icon">values</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.inegotiationevent.html#telopt" class="tsd-kind-icon">telopt</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.inegotiationevent.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
 						</section>
 					</div>
@@ -102,32 +101,22 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="size" class="tsd-anchor"></a>
-					<h3>size</h3>
-					<div class="tsd-signature tsd-kind-icon">size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="telopt" class="tsd-anchor"></a>
+					<h3>telopt</h3>
+					<div class="tsd-signature tsd-kind-icon">telopt<span class="tsd-signature-symbol">:</span> <a href="../enums/_consts_.telnetoption.html" class="tsd-signature-type">TelnetOption</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/TelnetEvent.ts:111</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/8d5c507/src/TelnetEvent.ts#L75">src/TelnetEvent.ts:75</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="type" class="tsd-anchor"></a>
 					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/_consts_.telneteventtype.html#mssp" class="tsd-signature-type">MSSP</a></div>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../modules/_consts_.html#negotiationeventtype" class="tsd-signature-type">NegotiationEventType</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/TelnetEvent.ts:109</li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="values" class="tsd-anchor"></a>
-					<h3>values</h3>
-					<div class="tsd-signature tsd-kind-icon">values<span class="tsd-signature-symbol">:</span> <a href="_telnetevent_.ienvironvar.html" class="tsd-signature-type">IEnvironVar</a><span class="tsd-signature-symbol">[]</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in src/TelnetEvent.ts:110</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/8d5c507/src/TelnetEvent.ts#L74">src/TelnetEvent.ts:74</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -185,27 +174,24 @@
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.iiacevent.html" class="tsd-kind-icon">IIACEvent</a>
 					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="_telnetevent_.imsspevent.html" class="tsd-kind-icon">IMSSPEvent</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-module">
-						<a href="_telnetevent_.imsspevent.html" class="tsd-kind-icon">IMSSPEvent</a>
+						<a href="_telnetevent_.inegotiationevent.html" class="tsd-kind-icon">INegotiation<wbr>Event</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_telnetevent_.imsspevent.html#size" class="tsd-kind-icon">size</a>
+								<a href="_telnetevent_.inegotiationevent.html#telopt" class="tsd-kind-icon">telopt</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_telnetevent_.imsspevent.html#type" class="tsd-kind-icon">type</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_telnetevent_.imsspevent.html#values" class="tsd-kind-icon">values</a>
+								<a href="_telnetevent_.inegotiationevent.html#type" class="tsd-kind-icon">type</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_telnetevent_.inegotiationevent.html" class="tsd-kind-icon">INegotiation<wbr>Event</a>
-					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.isubnegotiationevent.html" class="tsd-kind-icon">ISubnegotiation<wbr>Event</a>
 					</li>

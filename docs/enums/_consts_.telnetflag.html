@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>TelnetErrorCode | libtelnet-ts</title>
+	<title>TelnetFlag | libtelnet-ts</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -59,10 +59,10 @@
 					<a href="../modules/_consts_.html">&quot;consts&quot;</a>
 				</li>
 				<li>
-					<a href="_consts_.telneterrorcode.html">TelnetErrorCode</a>
+					<a href="_consts_.telnetflag.html">TelnetFlag</a>
 				</li>
 			</ul>
-			<h1>Enumeration TelnetErrorCode</h1>
+			<h1>Enumeration TelnetFlag</h1>
 		</div>
 	</div>
 </header>
@@ -76,12 +76,9 @@
 						<section class="tsd-index-section ">
 							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_consts_.telneterrorcode.html#badval" class="tsd-kind-icon">BADVAL</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_consts_.telneterrorcode.html#compress" class="tsd-kind-icon">COMPRESS</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_consts_.telneterrorcode.html#nomem" class="tsd-kind-icon">NOMEM</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_consts_.telneterrorcode.html#ok" class="tsd-kind-icon">OK</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_consts_.telneterrorcode.html#overflow" class="tsd-kind-icon">OVERFLOW</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_consts_.telneterrorcode.html#protocol" class="tsd-kind-icon">PROTOCOL</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_consts_.telnetflag.html#none" class="tsd-kind-icon">NONE</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_consts_.telnetflag.html#nvt_eol" class="tsd-kind-icon">NVT_<wbr>EOL</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_consts_.telnetflag.html#proxy" class="tsd-kind-icon">PROXY</a></li>
 							</ul>
 						</section>
 					</div>
@@ -90,94 +87,34 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Enumeration members</h2>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="badval" class="tsd-anchor"></a>
-					<h3>BADVAL</h3>
-					<div class="tsd-signature tsd-kind-icon">BADVAL<span class="tsd-signature-symbol">:</span></div>
+					<a name="none" class="tsd-anchor"></a>
+					<h3>NONE</h3>
+					<div class="tsd-signature tsd-kind-icon">NONE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/consts.ts:155</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/8d5c507/src/consts.ts#L63">src/consts.ts:63</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>invalid parameter, or API misuse</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="compress" class="tsd-anchor"></a>
-					<h3>COMPRESS</h3>
-					<div class="tsd-signature tsd-kind-icon">COMPRESS<span class="tsd-signature-symbol">:</span></div>
+					<a name="nvt_eol" class="tsd-anchor"></a>
+					<h3>NVT_<wbr>EOL</h3>
+					<div class="tsd-signature tsd-kind-icon">NVT_<wbr>EOL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 1 &lt;&lt; 1</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/consts.ts:163</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/8d5c507/src/consts.ts#L65">src/consts.ts:65</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>error handling compressed streams</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="nomem" class="tsd-anchor"></a>
-					<h3>NOMEM</h3>
-					<div class="tsd-signature tsd-kind-icon">NOMEM<span class="tsd-signature-symbol">:</span></div>
+					<a name="proxy" class="tsd-anchor"></a>
+					<h3>PROXY</h3>
+					<div class="tsd-signature tsd-kind-icon">PROXY<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 1 &lt;&lt; 0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/consts.ts:157</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/8d5c507/src/consts.ts#L64">src/consts.ts:64</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>memory allocation failure</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="ok" class="tsd-anchor"></a>
-					<h3>OK</h3>
-					<div class="tsd-signature tsd-kind-icon">OK<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 0</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in src/consts.ts:153</li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>no error</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="overflow" class="tsd-anchor"></a>
-					<h3>OVERFLOW</h3>
-					<div class="tsd-signature tsd-kind-icon">OVERFLOW<span class="tsd-signature-symbol">:</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in src/consts.ts:159</li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>data exceeds buffer size</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="protocol" class="tsd-anchor"></a>
-					<h3>PROTOCOL</h3>
-					<div class="tsd-signature tsd-kind-icon">PROTOCOL<span class="tsd-signature-symbol">:</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in src/consts.ts:161</li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>invalid sequence of special bytes</p>
-						</div>
-					</div>
 				</section>
 			</section>
 		</div>
@@ -212,39 +149,30 @@
 					<li class=" tsd-kind-enum tsd-parent-kind-module">
 						<a href="_consts_.telnetcommand.html" class="tsd-kind-icon">Telnet<wbr>Command</a>
 					</li>
+					<li class=" tsd-kind-enum tsd-parent-kind-module">
+						<a href="_consts_.telneterrorcode.html" class="tsd-kind-icon">Telnet<wbr>Error<wbr>Code</a>
+					</li>
+					<li class=" tsd-kind-enum tsd-parent-kind-module">
+						<a href="_consts_.telneteventtype.html" class="tsd-kind-icon">Telnet<wbr>Event<wbr>Type</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-enum tsd-parent-kind-module">
-						<a href="_consts_.telneterrorcode.html" class="tsd-kind-icon">Telnet<wbr>Error<wbr>Code</a>
+						<a href="_consts_.telnetflag.html" class="tsd-kind-icon">Telnet<wbr>Flag</a>
 						<ul>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_consts_.telneterrorcode.html#badval" class="tsd-kind-icon">BADVAL</a>
+								<a href="_consts_.telnetflag.html#none" class="tsd-kind-icon">NONE</a>
 							</li>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_consts_.telneterrorcode.html#compress" class="tsd-kind-icon">COMPRESS</a>
+								<a href="_consts_.telnetflag.html#nvt_eol" class="tsd-kind-icon">NVT_<wbr>EOL</a>
 							</li>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_consts_.telneterrorcode.html#nomem" class="tsd-kind-icon">NOMEM</a>
-							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_consts_.telneterrorcode.html#ok" class="tsd-kind-icon">OK</a>
-							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_consts_.telneterrorcode.html#overflow" class="tsd-kind-icon">OVERFLOW</a>
-							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_consts_.telneterrorcode.html#protocol" class="tsd-kind-icon">PROTOCOL</a>
+								<a href="_consts_.telnetflag.html#proxy" class="tsd-kind-icon">PROXY</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="_consts_.telneteventtype.html" class="tsd-kind-icon">Telnet<wbr>Event<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="_consts_.telnetflag.html" class="tsd-kind-icon">Telnet<wbr>Flag</a>
-					</li>
 					<li class=" tsd-kind-enum tsd-parent-kind-module">
 						<a href="_consts_.telnetoption.html" class="tsd-kind-icon">Telnet<wbr>Option</a>
 					</li>

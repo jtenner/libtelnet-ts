@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IIACEvent | libtelnet-ts</title>
+	<title>ITType | libtelnet-ts</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -59,10 +59,10 @@
 					<a href="../modules/_telnetevent_.html">&quot;TelnetEvent&quot;</a>
 				</li>
 				<li>
-					<a href="_telnetevent_.iiacevent.html">IIACEvent</a>
+					<a href="_telnetevent_.ittype.html">ITType</a>
 				</li>
 			</ul>
-			<h1>Interface IIACEvent</h1>
+			<h1>Interface ITType</h1>
 		</div>
 	</div>
 </header>
@@ -72,7 +72,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>An IAC event with the given command.</p>
+						<p>A TType event.</p>
 					</div>
 				</div>
 			</section>
@@ -80,7 +80,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">IIACEvent</span>
+						<span class="target">ITType</span>
 					</li>
 				</ul>
 			</section>
@@ -91,8 +91,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.iiacevent.html#cmd" class="tsd-kind-icon">cmd</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.iiacevent.html#type" class="tsd-kind-icon">type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.ittype.html#cmd" class="tsd-kind-icon">cmd</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.ittype.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.ittype.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
 						</section>
 					</div>
@@ -103,20 +104,30 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="cmd" class="tsd-anchor"></a>
 					<h3>cmd</h3>
-					<div class="tsd-signature tsd-kind-icon">cmd<span class="tsd-signature-symbol">:</span> <a href="../enums/_consts_.telnetcommand.html" class="tsd-signature-type">TelnetCommand</a></div>
+					<div class="tsd-signature tsd-kind-icon">cmd<span class="tsd-signature-symbol">:</span> <a href="../enums/_telnetevent_.ttypecommand.html" class="tsd-signature-type">TTypeCommand</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/TelnetEvent.ts:69</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/8d5c507/src/TelnetEvent.ts#L138">src/TelnetEvent.ts:138</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="name" class="tsd-anchor"></a>
+					<h3>name</h3>
+					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/8d5c507/src/TelnetEvent.ts#L139">src/TelnetEvent.ts:139</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="type" class="tsd-anchor"></a>
 					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/_consts_.telneteventtype.html#iac" class="tsd-signature-type">IAC</a></div>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/_consts_.telneteventtype.html#ttype" class="tsd-signature-type">TTYPE</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/TelnetEvent.ts:68</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/8d5c507/src/TelnetEvent.ts#L137">src/TelnetEvent.ts:137</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -171,21 +182,9 @@
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.ierrorevent.html" class="tsd-kind-icon">IError<wbr>Event</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-module">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.iiacevent.html" class="tsd-kind-icon">IIACEvent</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_telnetevent_.iiacevent.html#cmd" class="tsd-kind-icon">cmd</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_telnetevent_.iiacevent.html#type" class="tsd-kind-icon">type</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.imsspevent.html" class="tsd-kind-icon">IMSSPEvent</a>
 					</li>
@@ -195,9 +194,24 @@
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.isubnegotiationevent.html" class="tsd-kind-icon">ISubnegotiation<wbr>Event</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.ittype.html" class="tsd-kind-icon">ITType</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_telnetevent_.ittype.html#cmd" class="tsd-kind-icon">cmd</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_telnetevent_.ittype.html#name" class="tsd-kind-icon">name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_telnetevent_.ittype.html#type" class="tsd-kind-icon">type</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.izmpevent.html" class="tsd-kind-icon">IZMPEvent</a>
 					</li>

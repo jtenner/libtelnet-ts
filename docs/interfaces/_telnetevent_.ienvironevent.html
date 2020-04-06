@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ISubnegotiationEvent | libtelnet-ts</title>
+	<title>IEnvironEvent | libtelnet-ts</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -59,10 +59,10 @@
 					<a href="../modules/_telnetevent_.html">&quot;TelnetEvent&quot;</a>
 				</li>
 				<li>
-					<a href="_telnetevent_.isubnegotiationevent.html">ISubnegotiationEvent</a>
+					<a href="_telnetevent_.ienvironevent.html">IEnvironEvent</a>
 				</li>
 			</ul>
-			<h1>Interface ISubnegotiationEvent</h1>
+			<h1>Interface IEnvironEvent</h1>
 		</div>
 	</div>
 </header>
@@ -72,7 +72,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>A subnegotiation with an option and a payload.</p>
+						<p>An environ event, with a set of IEnvironVar values and an Environ Command.</p>
 					</div>
 				</div>
 			</section>
@@ -80,7 +80,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ISubnegotiationEvent</span>
+						<span class="target">IEnvironEvent</span>
 					</li>
 				</ul>
 			</section>
@@ -91,10 +91,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.isubnegotiationevent.html#buffer" class="tsd-kind-icon">buffer</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.isubnegotiationevent.html#size" class="tsd-kind-icon">size</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.isubnegotiationevent.html#telopt" class="tsd-kind-icon">telopt</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.isubnegotiationevent.html#type" class="tsd-kind-icon">type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.ienvironevent.html#cmd" class="tsd-kind-icon">cmd</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.ienvironevent.html#size" class="tsd-kind-icon">size</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.ienvironevent.html#type" class="tsd-kind-icon">type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_telnetevent_.ienvironevent.html#values" class="tsd-kind-icon">values</a></li>
 							</ul>
 						</section>
 					</div>
@@ -103,12 +103,12 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="buffer" class="tsd-anchor"></a>
-					<h3>buffer</h3>
-					<div class="tsd-signature tsd-kind-icon">buffer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Uint8Array</span></div>
+					<a name="cmd" class="tsd-anchor"></a>
+					<h3>cmd</h3>
+					<div class="tsd-signature tsd-kind-icon">cmd<span class="tsd-signature-symbol">:</span> <a href="../enums/_consts_.environcommand.html" class="tsd-signature-type">EnvironCommand</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/TelnetEvent.ts:81</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/8d5c507/src/TelnetEvent.ts#L104">src/TelnetEvent.ts:104</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -118,27 +118,27 @@
 					<div class="tsd-signature tsd-kind-icon">size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/TelnetEvent.ts:82</li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="telopt" class="tsd-anchor"></a>
-					<h3>telopt</h3>
-					<div class="tsd-signature tsd-kind-icon">telopt<span class="tsd-signature-symbol">:</span> <a href="../enums/_consts_.telnetoption.html" class="tsd-signature-type">TelnetOption</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in src/TelnetEvent.ts:83</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/8d5c507/src/TelnetEvent.ts#L103">src/TelnetEvent.ts:103</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="type" class="tsd-anchor"></a>
 					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/_consts_.telneteventtype.html#subnegotiation" class="tsd-signature-type">SUBNEGOTIATION</a></div>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/_consts_.telneteventtype.html#environ" class="tsd-signature-type">ENVIRON</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/TelnetEvent.ts:80</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/8d5c507/src/TelnetEvent.ts#L101">src/TelnetEvent.ts:101</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="values" class="tsd-anchor"></a>
+					<h3>values</h3>
+					<div class="tsd-signature tsd-kind-icon">values<span class="tsd-signature-symbol">:</span> <a href="_telnetevent_.ienvironvar.html" class="tsd-signature-type">IEnvironVar</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/8d5c507/src/TelnetEvent.ts#L102">src/TelnetEvent.ts:102</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -184,9 +184,27 @@
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.idataevent.html" class="tsd-kind-icon">IData<wbr>Event</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.ienvironevent.html" class="tsd-kind-icon">IEnviron<wbr>Event</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_telnetevent_.ienvironevent.html#cmd" class="tsd-kind-icon">cmd</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_telnetevent_.ienvironevent.html#size" class="tsd-kind-icon">size</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_telnetevent_.ienvironevent.html#type" class="tsd-kind-icon">type</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_telnetevent_.ienvironevent.html#values" class="tsd-kind-icon">values</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.ienvironvar.html" class="tsd-kind-icon">IEnviron<wbr>Var</a>
 					</li>
@@ -202,27 +220,9 @@
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.inegotiationevent.html" class="tsd-kind-icon">INegotiation<wbr>Event</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-module">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.isubnegotiationevent.html" class="tsd-kind-icon">ISubnegotiation<wbr>Event</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_telnetevent_.isubnegotiationevent.html#buffer" class="tsd-kind-icon">buffer</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_telnetevent_.isubnegotiationevent.html#size" class="tsd-kind-icon">size</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_telnetevent_.isubnegotiationevent.html#telopt" class="tsd-kind-icon">telopt</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_telnetevent_.isubnegotiationevent.html#type" class="tsd-kind-icon">type</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_telnetevent_.ittype.html" class="tsd-kind-icon">ITType</a>
 					</li>
