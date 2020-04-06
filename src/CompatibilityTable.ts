@@ -8,6 +8,7 @@ import { TelnetAPI } from "./TelnetAPI";
 
 const telnet = require("../build/libtelnet") as TelnetAPI;
 
+/** This class is a helper class for generating a CompatibilityTable. */
 export class CompatibilityTableGenerator {
   private table: [
     TelnetOption,
@@ -15,6 +16,7 @@ export class CompatibilityTableGenerator {
     TelnetNegotiationCommand,
   ][] = [];
 
+  /** Add a supported option, and wether it's supported locally and/or remotely. */
   public support(option: TelnetOption, local: boolean, remote: boolean): this {
     this.table.push([
       option,
@@ -24,6 +26,7 @@ export class CompatibilityTableGenerator {
     return this;
   }
 
+  /** Finally generate the table. This will commit the table to memory and can be reused. */
   public create(): CompatibilityTable {
     // collect a reference to the heap and how long the table needs to be
     const heap = new DataView(telnet.HEAPU8.buffer);
@@ -83,13 +86,16 @@ export class CompatibilityTableGenerator {
   }
 }
 
+/** This class represents a table of supported telnet options. */
 export class CompatibilityTable {
+  /** Shorthand for new CompatibilityTableGenerator() */
   public static create(): CompatibilityTableGenerator {
     return new CompatibilityTableGenerator();
   }
 
   public constructor(public pointer: number) {}
 
+  /** Dispose this table when it is no longer needed or used. */
   dispose() {
     telnet._free(this.pointer);
   }
