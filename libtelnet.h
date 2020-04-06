@@ -374,6 +374,11 @@ struct telnet_t;
 extern void init();
 
 /*!
+ * \brief Trace a label.
+ */
+extern void trace_func(int val);
+
+/*!
  * \brief Initialize a telnet state tracker.
  *
  * This function initializes a new state tracker, which is used for all

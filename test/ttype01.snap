@@ -1,0 +1,8 @@
+Subnegotiation: TTYPE 1
+TType: SEND emsc
+Subnegotiation: TTYPE 0,120,116,101,114,109
+TType: IS xterm
+Subnegotiation: TTYPE 0
+TType: IS 
+Subnegotiation: TTYPE 1,120,116,101,114,109
+TType: SEND emsc

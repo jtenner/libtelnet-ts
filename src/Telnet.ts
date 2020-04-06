@@ -26,7 +26,7 @@ const telnet = require("../build/libtelnet") as TelnetAPI;
 
 telnet.onRuntimeInitialized = function () {
   telnet._init();
-  console.log(telnet);
+  Telnet.runtimeInitialized();
 };
 
 export type CompatiblityTable = [TelnetOption, boolean, boolean][];
@@ -36,6 +36,8 @@ export type CompatiblityTable = [TelnetOption, boolean, boolean][];
  * web assembly to encode and decode messages from a socket.
  */
 export class Telnet extends EventEmitter {
+  public static runtimeInitialized = () => void 0;
+
   /** A map of pointers to their respective Telnet objects for event routing. */
   private static map = new Map<number, Telnet>();
 
@@ -51,6 +53,7 @@ export class Telnet extends EventEmitter {
     let target = Telnet.map.get(telnet);
     if (!target) throw new Error("Invalid event target.");
     const event = Telnet.getEvent(eventPointer);
+
     switch (event.type) {
       case TelnetEventType.DO:
       case TelnetEventType.DONT:
@@ -231,9 +234,10 @@ export class Telnet extends EventEmitter {
    */
   receive(bytes: ArrayLike<number>): void {
     const bufferLength = bytes.length;
-    const bufferPointer = telnet._malloc(bufferLength);
+    const bufferPointer = telnet._malloc(bufferLength + 1);
     if (bufferPointer === 0) throw new Error("Out of memory.");
     telnet.HEAPU8.set(bytes, bufferPointer);
+    telnet.HEAPU8[bufferPointer + bufferLength] = 0;
     telnet._telnet_recv(this.pointer, bufferPointer, bufferLength);
     telnet._free(bufferPointer);
   }
