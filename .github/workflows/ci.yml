@@ -19,11 +19,11 @@ jobs:
 
       - name: install dependencies
         shell: bash
-        run: sudo apt-get update && sudo apt-get install emscripten && npm ci
+        run: sudo apt-get install python2.7 cmake default-jre && git clone https://github.com/emscripten-core/emsdk.git && cd emsdk && ./emsdk install latest && ./emsdk activate latest && cd .. && npm ci
 
       - name: build
         shell: bash
-        run: emcc && npm run build:${{ matrix.config }}
+        run: cd emsdk && source ./emsdk_env.sh && && cd .. && emcc && npm run build:${{ matrix.config }}
 
       - name: test
         shell: bash
