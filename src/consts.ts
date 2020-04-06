@@ -136,15 +136,15 @@ export enum EnvironCommand {
   INFO = 2,
 }
 
-export type NegotiationEvent =
+export type NegotiationEventType =
   | TelnetEventType.WILL
   | TelnetEventType.WONT
   | TelnetEventType.DO
   | TelnetEventType.DONT;
 
-export type ErrorEvent = TelnetEventType.ERROR | TelnetEventType.WARNING;
+export type ErrorEventType = TelnetEventType.ERROR | TelnetEventType.WARNING;
 
-export type DataEvent = TelnetEventType.DATA | TelnetEventType.SEND;
+export type DataEventType = TelnetEventType.DATA | TelnetEventType.SEND;
 
 export enum TelnetErrorCode {
   /** no error */
