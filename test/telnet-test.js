@@ -137,5 +137,6 @@ Telnet.runtimeInitialized = () => {
         process.stdout.write(`[Success]\n\n`);
       }
     }
+    telnet.dispose();
   });
 };

@@ -15,8 +15,9 @@
     "build:debug": "run-s rimraf-build rimraf-doc rimraf-lib mkdir-build prettier compile:debug tsc typedoc",
     "tsc": "tsc",
     "prettier": "prettier --write .",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "pre-commit": "run-s build:release"
+    "test": "node test/telnet-test",
+    "update-snapshots": "node test/telnet-test --create",
+    "pre-commit": "run-s build:release test"
   },
   "repository": {
     "type": "git",
