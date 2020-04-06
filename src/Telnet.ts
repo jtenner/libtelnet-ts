@@ -24,11 +24,6 @@ import { TelnetAPI } from "./TelnetAPI";
 
 const telnet = require("../build/libtelnet") as TelnetAPI;
 
-telnet.onRuntimeInitialized = function () {
-  telnet._init();
-  Telnet.runtimeInitialized();
-};
-
 export type CompatiblityTable = [TelnetOption, boolean, boolean][];
 
 /**
@@ -36,7 +31,16 @@ export type CompatiblityTable = [TelnetOption, boolean, boolean][];
  * web assembly to encode and decode messages from a socket.
  */
 export class Telnet extends EventEmitter {
-  public static runtimeInitialized = () => void 0;
+  /**
+   * When the runtime is finally initialized, this promise will resolve,
+   * and telnet objects can finally be instantiated.
+   */
+  public static ready = new Promise((resolve) => {
+    telnet.onRuntimeInitialized = function () {
+      telnet._init();
+      resolve();
+    };
+  });
 
   /** A map of pointers to their respective Telnet objects for event routing. */
   private static map = new Map<number, Telnet>();
@@ -64,9 +68,11 @@ export class Telnet extends EventEmitter {
       case TelnetEventType.IAC: {
         return target.emit("iac", event.iac);
       }
-      case TelnetEventType.DATA:
-      case TelnetEventType.SEND: {
+      case TelnetEventType.DATA: {
         return target.emit("data", event.data);
+      }
+      case TelnetEventType.SEND: {
+        return target.emit("send", event.data);
       }
       case TelnetEventType.WARNING:
       case TelnetEventType.ERROR: {
@@ -109,6 +115,8 @@ export class Telnet extends EventEmitter {
   public emit(event: "sb", data: ISubnegotiationEvent): boolean;
   /** Emit a "error" event with a error event object. */
   public emit(event: "error", data: IErrorEvent): boolean;
+  /** Emit a "send" event with a data event object. */
+  public emit(event: "send", data: IDataEvent): boolean;
   /** Emit a "data" event with a data event object. */
   public emit(event: "data", data: IDataEvent): boolean;
   /** Emit a "iac" event with a iac event object. */
@@ -133,7 +141,9 @@ export class Telnet extends EventEmitter {
   public on(event: "sb", listener: (data: ISubnegotiationEvent) => void): this;
   /** Listen for an error event. The callback accepts a error event object. */
   public on(event: "error", listener: (data: IErrorEvent) => void): this;
-  /** Listen for an data event. The callback accepts a data event object. If the event type is a DATA event, interpret this payload as a message. If the event type is a SEND event, write the payload to the scoket. */
+  /** Listen for a send event. The callback accepts a data event object with a payload. This payload must be written to the socket immediately, because the data will be freed by the runtime after the event fires. */
+  public on(event: "send", listener: (data: IDataEvent) => void): this;
+  /** Listen for a data event. The callback accepts a data event object. This payload must be treated as a telnet message or copied immediately, because the data will be freed by the runtime after the event fires. */
   public on(event: "data", listener: (data: IDataEvent) => void): this;
   /** Listen for an iac event. The callback accepts a iac event object. */
   public on(event: "iac", listener: (data: IIACEvent) => void): this;

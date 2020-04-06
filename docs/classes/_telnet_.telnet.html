@@ -107,6 +107,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_telnet_.telnet.html#pointer" class="tsd-kind-icon">pointer</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_telnet_.telnet.html#defaultmaxlisteners" class="tsd-kind-icon">default<wbr>Max<wbr>Listeners</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static"><a href="_telnet_.telnet.html#map" class="tsd-kind-icon">map</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_telnet_.telnet.html#ready" class="tsd-kind-icon">ready</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -137,7 +138,6 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_telnet_.telnet.html#getevent" class="tsd-kind-icon">get<wbr>Event</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_telnet_.telnet.html#listenercount-1" class="tsd-kind-icon">listener<wbr>Count</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_telnet_.telnet.html#route" class="tsd-kind-icon">route</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_telnet_.telnet.html#runtimeinitialized" class="tsd-kind-icon">runtime<wbr>Initialized</a></li>
 							</ul>
 						</section>
 					</div>
@@ -156,7 +156,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.__constructor</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:155</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L165">src/Telnet.ts:165</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -181,7 +181,7 @@
 					<div class="tsd-signature tsd-kind-icon">_to<wbr>Free<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/Telnet.ts:45</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L49">src/Telnet.ts:49</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -196,7 +196,7 @@
 					<div class="tsd-signature tsd-kind-icon">pointer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/Telnet.ts:155</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L165">src/Telnet.ts:165</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -222,12 +222,28 @@
 					<div class="tsd-signature tsd-kind-icon">map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="_telnet_.telnet.html" class="tsd-signature-type">Telnet</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map&lt;number, Telnet&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/Telnet.ts:42</li>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L46">src/Telnet.ts:46</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>A map of pointers to their respective Telnet objects for event routing.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="ready" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> ready</h3>
+					<div class="tsd-signature tsd-kind-icon">ready<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Promise((resolve) &#x3D;&gt; {telnet.onRuntimeInitialized &#x3D; function () {telnet._init();resolve();};})</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L38">src/Telnet.ts:38</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>When the runtime is finally initialized, this promise will resolve,
+							and telnet objects can finally be instantiated.</p>
 						</div>
 					</div>
 				</section>
@@ -289,7 +305,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/Telnet.ts:305</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L315">src/Telnet.ts:315</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -312,6 +328,7 @@
 						<li class="tsd-signature tsd-kind-icon">emit<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"zmp"</span>, data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_telnetevent_.izmpevent.html" class="tsd-signature-type">IZMPEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 						<li class="tsd-signature tsd-kind-icon">emit<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"sb"</span>, data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_telnetevent_.isubnegotiationevent.html" class="tsd-signature-type">ISubnegotiationEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 						<li class="tsd-signature tsd-kind-icon">emit<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"error"</span>, data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_telnetevent_.ierrorevent.html" class="tsd-signature-type">IErrorEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">emit<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"send"</span>, data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_telnetevent_.idataevent.html" class="tsd-signature-type">IDataEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 						<li class="tsd-signature tsd-kind-icon">emit<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"data"</span>, data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_telnetevent_.idataevent.html" class="tsd-signature-type">IDataEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 						<li class="tsd-signature tsd-kind-icon">emit<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"iac"</span>, data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_telnetevent_.iiacevent.html" class="tsd-signature-type">IIACEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 						<li class="tsd-signature tsd-kind-icon">emit<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"negotiate"</span>, data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_telnetevent_.inegotiationevent.html" class="tsd-signature-type">INegotiationEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
@@ -321,7 +338,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:99</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L105">src/Telnet.ts:105</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -344,7 +361,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:101</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L107">src/Telnet.ts:107</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -367,7 +384,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:103</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L109">src/Telnet.ts:109</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -390,7 +407,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:105</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L111">src/Telnet.ts:111</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -413,7 +430,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:107</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L113">src/Telnet.ts:113</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -436,7 +453,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:109</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L115">src/Telnet.ts:115</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -459,7 +476,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:111</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L117">src/Telnet.ts:117</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -482,7 +499,30 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:113</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L119">src/Telnet.ts:119</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Emit a &quot;send&quot; event with a data event object.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>event: <span class="tsd-signature-type">"send"</span></h5>
+								</li>
+								<li>
+									<h5>data: <a href="../interfaces/_telnetevent_.idataevent.html" class="tsd-signature-type">IDataEvent</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides EventEmitter.emit</p>
+								<ul>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L121">src/Telnet.ts:121</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -505,7 +545,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:115</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L123">src/Telnet.ts:123</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -528,7 +568,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:117</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L125">src/Telnet.ts:125</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -595,7 +635,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/Telnet.ts:251</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L261">src/Telnet.ts:261</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -675,7 +715,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/Telnet.ts:261</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L271">src/Telnet.ts:271</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -758,6 +798,7 @@
 						<li class="tsd-signature tsd-kind-icon">on<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"zmp"</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_telnetevent_.izmpevent.html" class="tsd-signature-type">IZMPEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 						<li class="tsd-signature tsd-kind-icon">on<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"sb"</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_telnetevent_.isubnegotiationevent.html" class="tsd-signature-type">ISubnegotiationEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 						<li class="tsd-signature tsd-kind-icon">on<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"error"</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_telnetevent_.ierrorevent.html" class="tsd-signature-type">IErrorEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">on<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"send"</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_telnetevent_.idataevent.html" class="tsd-signature-type">IDataEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 						<li class="tsd-signature tsd-kind-icon">on<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"data"</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_telnetevent_.idataevent.html" class="tsd-signature-type">IDataEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 						<li class="tsd-signature tsd-kind-icon">on<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"iac"</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_telnetevent_.iiacevent.html" class="tsd-signature-type">IIACEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 						<li class="tsd-signature tsd-kind-icon">on<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"negotiate"</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_telnetevent_.inegotiationevent.html" class="tsd-signature-type">INegotiationEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
@@ -767,7 +808,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:123</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L131">src/Telnet.ts:131</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -808,7 +849,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:125</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L133">src/Telnet.ts:133</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -849,7 +890,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:127</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L135">src/Telnet.ts:135</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -890,7 +931,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:129</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L137">src/Telnet.ts:137</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -931,7 +972,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:131</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L139">src/Telnet.ts:139</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -972,7 +1013,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:133</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L141">src/Telnet.ts:141</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1013,7 +1054,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:135</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L143">src/Telnet.ts:143</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1054,12 +1095,53 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:137</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L145">src/Telnet.ts:145</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Listen for an data event. The callback accepts a data event object. If the event type is a DATA event, interpret this payload as a message. If the event type is a SEND event, write the payload to the scoket.</p>
+									<p>Listen for a send event. The callback accepts a data event object with a payload. This payload must be written to the socket immediately, because the data will be freed by the runtime after the event fires.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>event: <span class="tsd-signature-type">"send"</span></h5>
+								</li>
+								<li>
+									<h5>listener: <span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_telnetevent_.idataevent.html" class="tsd-signature-type">IDataEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-signature">
+											<ul class="tsd-signatures tsd-kind-type-literal">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_telnetevent_.idataevent.html" class="tsd-signature-type">IDataEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>data: <a href="../interfaces/_telnetevent_.idataevent.html" class="tsd-signature-type">IDataEvent</a></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides EventEmitter.on</p>
+								<ul>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L147">src/Telnet.ts:147</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Listen for a data event. The callback accepts a data event object. This payload must be treated as a telnet message or copied immediately, because the data will be freed by the runtime after the event fires.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1095,7 +1177,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:139</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L149">src/Telnet.ts:149</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1136,7 +1218,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in src/Telnet.ts:141</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L151">src/Telnet.ts:151</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1344,7 +1426,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/Telnet.ts:235</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L245">src/Telnet.ts:245</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1445,7 +1527,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/Telnet.ts:270</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L280">src/Telnet.ts:280</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1476,7 +1558,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/Telnet.ts:282</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L292">src/Telnet.ts:292</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1531,7 +1613,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/Telnet.ts:296</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L306">src/Telnet.ts:306</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1568,7 +1650,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/Telnet.ts:150</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L160">src/Telnet.ts:160</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1630,7 +1712,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/Telnet.ts:48</li>
+									<li>Defined in <a href="https://github.com/jtenner/libtelnet-ts/blob/d5a2a11/src/Telnet.ts#L52">src/Telnet.ts:52</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1651,23 +1733,6 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="runtimeinitialized" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> runtime<wbr>Initialized</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">runtime<wbr>Initialized<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in src/Telnet.ts:39</li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">undefined</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1717,6 +1782,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static">
 								<a href="_telnet_.telnet.html#map" class="tsd-kind-icon">map</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="_telnet_.telnet.html#ready" class="tsd-kind-icon">ready</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_telnet_.telnet.html#addlistener" class="tsd-kind-icon">add<wbr>Listener</a>
@@ -1793,9 +1861,6 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="_telnet_.telnet.html#route" class="tsd-kind-icon">route</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_telnet_.telnet.html#runtimeinitialized" class="tsd-kind-icon">runtime<wbr>Initialized</a>
-							</li>
 						</ul>
 					</li>
 				</ul>
@@ -1827,6 +1892,10 @@
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
@@ -1837,9 +1906,6 @@
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 		</div>
 	</div>

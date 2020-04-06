@@ -21,6 +21,10 @@ const teloptSupport = [
   [TelnetOption.TELNET_TELOPT_TTYPE, true, false],
 ];
 
+function bytesToString(bytes) {
+  return `"` + Buffer.from(bytes).toString().replace(/"/g, `\\"`) + `"`;
+}
+
 function createWritable() {
   const writable = {
     value: "",
@@ -35,7 +39,7 @@ const inputFiles = glob.sync("test/*.input");
 
 const createSnap = process.argv.includes("--create");
 
-Telnet.runtimeInitialized = () => {
+Telnet.ready.then(() => {
   inputFiles.forEach((file) => {
     const writable = createWritable();
     const contents = fs.readFileSync(file, "utf8");
@@ -51,10 +55,16 @@ Telnet.runtimeInitialized = () => {
     telnet.on("compress", (event) =>
       writable.write(`Compression: ${event.state}\n`),
     );
-    telnet.on("data", (event) => {
-      const str = Buffer.from(event.buffer).toString();
+    telnet.on("send", (event) => {
       writable.write(
-        `Data: ${TelnetEventType[event.type]} => ${str} = [bytes] ${Array.from(
+        `Send: ${bytesToString(event.buffer)} = [bytes] ${Array.from(
+          event.buffer,
+        )}\n`,
+      );
+    });
+    telnet.on("data", (event) => {
+      writable.write(
+        `Data: ${bytesToString(event.buffer)} = [bytes] ${Array.from(
           event.buffer,
         )}\n`,
       );
@@ -139,4 +149,4 @@ Telnet.runtimeInitialized = () => {
     }
     telnet.dispose();
   });
-};
+});
