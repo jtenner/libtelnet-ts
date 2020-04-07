@@ -8,8 +8,15 @@ import { TelnetAPI } from "./TelnetAPI";
 
 const telnet = require("../build/libtelnet") as TelnetAPI;
 
-/** This class is a helper class for generating a CompatibilityTable. */
-export class CompatibilityTableGenerator {
+/** This class represents a table of supported telnet options. */
+export class CompatibilityTable {
+  public pointer: number = 0;
+
+  /** Shorthand for new CompatibilityTableGenerator() */
+  public static create(): CompatibilityTable {
+    return new CompatibilityTable();
+  }
+
   private table: [
     TelnetOption,
     TelnetNegotiationCommand,
@@ -27,7 +34,9 @@ export class CompatibilityTableGenerator {
   }
 
   /** Finally generate the table. This will commit the table to memory and can be reused. */
-  public create(): CompatibilityTable {
+  public finish(): CompatibilityTable {
+    if (this.pointer !== 0) return this;
+
     // collect a reference to the heap and how long the table needs to be
     const heap = new DataView(telnet.HEAPU8.buffer);
     const table = this.table;
@@ -79,21 +88,12 @@ export class CompatibilityTableGenerator {
     // set the last entry in the table
     heap.setUint32(arrayPointer + (length << 2), finalEntryPointer, true);
 
-    return new CompatibilityTable(arrayPointer);
+    this.pointer = arrayPointer;
+    return this;
   }
-}
-
-/** This class represents a table of supported telnet options. */
-export class CompatibilityTable {
-  /** Shorthand for new CompatibilityTableGenerator() */
-  public static create(): CompatibilityTableGenerator {
-    return new CompatibilityTableGenerator();
-  }
-
-  public constructor(public pointer: number) {}
 
   /** Dispose this table when it is no longer needed or used. */
-  dispose() {
+  public dispose() {
     telnet._free(this.pointer);
   }
 }

@@ -41,7 +41,7 @@ Telnet.ready.then(() => {
     .support(TelnetOption.MSSP, true, false)
     .support(TelnetOption.NEW_ENVIRON, true, false)
     .support(TelnetOption.TTYPE, true, false)
-    .create();
+    .finish();
 
   inputFiles.forEach((file) => {
     const writable = createWritable();
