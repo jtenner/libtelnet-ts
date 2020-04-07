@@ -37,7 +37,7 @@ The TS api is a simple wrapper for the libtelnet package.
 ### III.a TS Example Echo Server
 
 ```ts
-import { Telnet, CompatibilityTable } from "libtelnet-ts";
+import { Telnet, CompatibilityTable, TelnetOption } from "libtelnet-ts";
 
 import net from "net";
 
