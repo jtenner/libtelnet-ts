@@ -85,10 +85,9 @@ export interface ITType {
  */
 export declare class TelnetEvent {
     pointer: number;
-    private heap;
     /** The telnet event type. */
     type: TelnetEventType;
-    constructor(pointer: number, heap: DataView);
+    constructor(pointer: number);
     /**
      * Interpret this event as a data event. Either TelnetEventType.{Data | Send}.
      *
