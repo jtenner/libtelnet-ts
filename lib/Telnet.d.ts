@@ -18,7 +18,7 @@ export declare class Telnet extends EventEmitter {
     /** A collection of pointers to be freed when this Telnet object is disposed. */
     private _toFree;
     /** A routing function that gets called from web assembly when a Telnet object must fire an event. */
-    static route(telnet: number, eventPointer: number, _userDataPointer: number): boolean;
+    static route(telnet: number, eventPointer: number): boolean;
     /** Emit a "mssp" event with a mssp event object. */
     emit(event: "mssp", data: IMSSPEvent): boolean;
     /** Emit a "environ" event with a environ event object. */
