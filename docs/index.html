@@ -97,6 +97,52 @@
 					<h2>II. TS API</h2>
 				</a>
 				<p>The TS api is a simple wrapper for the libtelnet package.</p>
+				<a href="#iiia-ts-example-echo-server" id="iiia-ts-example-echo-server" style="color: inherit; text-decoration: none;">
+					<h3>III.a TS Example Echo Server</h3>
+				</a>
+				<pre><code class="language-ts"><span class="hljs-keyword">import</span> { Telnet, CompatibilityTable } <span class="hljs-keyword">from</span> <span class="hljs-string">"libtelnet-ts"</span>;
+
+<span class="hljs-keyword">import</span> net <span class="hljs-keyword">from</span> <span class="hljs-string">"net"</span>;
+
+<span class="hljs-keyword">const</span> server = net.createServer();
+
+<span class="hljs-keyword">let</span> table;
+
+server.on(<span class="hljs-string">"connection"</span>, <span class="hljs-function">(<span class="hljs-params">socket</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> telnet = <span class="hljs-keyword">new</span> Telnet(table);
+
+  <span class="hljs-comment">// all bytes must immediately pass through telnet as a Buffer or Uint8Array</span>
+  socket.on(<span class="hljs-string">"data"</span>, <span class="hljs-function">(<span class="hljs-params">bytes</span>) =&gt;</span> {
+    telnet.receive(bytes);
+  });
+
+  <span class="hljs-comment">// any bytes that should be sent to the client must pass through the telnet protocol</span>
+  telnet.on(<span class="hljs-string">"send"</span>, <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+    socket.write(event.buffer);
+  });
+
+  <span class="hljs-comment">// sanitized data and properly escaped from telnet</span>
+  telnet.on(<span class="hljs-string">"data"</span>, <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+    <span class="hljs-comment">// inspect the incoming bytes by writing them to stdout</span>
+    process.stdout.write(event.buffer);
+
+    <span class="hljs-comment">// this data should be sent back to the client, send the bytes through telnet</span>
+    telnet.send(event.buffer);
+  });
+
+  <span class="hljs-comment">// always call telnet.dispose() when a socket closees</span>
+  socket.on(<span class="hljs-string">"close"</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    telnet.dispose();
+  });
+});
+
+Telnet.ready.then(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> {
+  <span class="hljs-comment">// must wait for the runtime to initialize</span>
+  table = CompatibilityTable.create()
+    .support(TelnetOption.ECHO, <span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>) <span class="hljs-comment">// local and remote echo</span>
+    .finish();
+  server.listen(<span class="hljs-number">1234</span>);
+});</code></pre>
 				<a href="#iii-c-api" id="iii-c-api" style="color: inherit; text-decoration: none;">
 					<h2>III. C API</h2>
 				</a>
@@ -662,9 +708,6 @@
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/compatibilitytable.html" class="tsd-kind-icon">Compatibility<wbr>Table</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/compatibilitytablegenerator.html" class="tsd-kind-icon">Compatibility<wbr>Table<wbr>Generator</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/telnet.html" class="tsd-kind-icon">Telnet</a>
