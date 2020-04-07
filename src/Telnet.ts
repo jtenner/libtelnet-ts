@@ -47,11 +47,7 @@ export class Telnet extends EventEmitter {
   private _toFree: number[] = [];
 
   /** A routing function that gets called from web assembly when a Telnet object must fire an event. */
-  public static route(
-    telnet: number,
-    eventPointer: number,
-    _userDataPointer: number,
-  ): boolean {
+  public static route(telnet: number, eventPointer: number): boolean {
     let target = Telnet.map.get(telnet);
     if (!target) throw new Error("Invalid event target.");
     const event = Telnet.getEvent(eventPointer);
@@ -166,7 +162,7 @@ export class Telnet extends EventEmitter {
     super();
 
     // finally pass the array pointer into the telnet_init function
-    this.pointer = telnet._telnet_init(compatibilityTable.pointer, flags, 0); // user data is null
+    this.pointer = telnet._telnet_init(compatibilityTable.pointer, flags); // user data is null
 
     // hook up event listener
     Telnet.map.set(this.pointer, this);

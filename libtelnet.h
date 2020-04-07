@@ -387,10 +387,20 @@ extern void trace_func(int val);
  *
  * \param telopts   Table of TELNET options the application supports.
  * \param flags     0 or TELNET_FLAG_PROXY.
- * \param user_data Optional data pointer that will be passsed to eh.
  * \return Telnet state tracker object.
  */
-extern telnet_t* telnet_init(const telnet_telopt_t *telopts,  unsigned char flags, void *user_data);
+extern telnet_t* telnet_init(const telnet_telopt_t *telopts,  unsigned char flags);
+
+/*!
+ * \brief Call out into javascript with the event.
+ *
+ * This function is responsible for reporting events to JavaScript. It accepts
+ * the following parameters.
+ *
+ * \param telnet_t  The telnet struct
+ * \param event     The telnet event
+ */
+extern void generic_event_handler(telnet_t *telnet, telnet_event_t *event);
 
 /*!
  * \brief Free up any memory allocated by a state tracker.

@@ -11,11 +11,7 @@ export interface TelnetAPI {
   _malloc(size: number): number;
   _telnet_free(telnet: number): void;
   _telnet_iac(telnet: number, cmd: TelnetCommand): void;
-  _telnet_init(
-    compatibilityTable: number,
-    flags: TelnetFlag,
-    userData: number,
-  ): number;
+  _telnet_init(compatibilityTable: number, flags: TelnetFlag): number;
   _telnet_negotiate(
     telnet: number,
     cmd: TelnetNegotiationCommand,
