@@ -68,9 +68,6 @@ export class CompatibilityTableGenerator {
       // should be set to DO/DONT
       const him = entry[2] ? TelnetCommand.DO : TelnetCommand.DONT;
       heap.setUint8(entryPointer + consts.telnet_telopt_t_him_offset, him);
-
-      // set the table entry at the next index
-      heap.setUint32(arrayPointer + (i << 2), entryPointer, true);
     }
 
     // create the last entry [-1, 0, 0]
