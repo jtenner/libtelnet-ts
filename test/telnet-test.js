@@ -7,6 +7,7 @@ const {
   TTypeCommand,
   EnvironCommand,
   CompatibilityTable,
+  EnvironVarType,
 } = require("../lib");
 
 const glob = require("glob");
@@ -34,11 +35,12 @@ const createSnap = process.argv.includes("--create");
 
 Telnet.ready.then(() => {
   const teloptSupport = CompatibilityTable.create()
-    .support(TelnetOption.TELNET_TELOPT_COMPRESS2, true, false)
-    .support(TelnetOption.TELNET_TELOPT_ZMP, true, false)
-    .support(TelnetOption.TELNET_TELOPT_MSSP, true, false)
-    .support(TelnetOption.TELNET_TELOPT_NEW_ENVIRON, true, false)
-    .support(TelnetOption.TELNET_TELOPT_TTYPE, true, false)
+    .support(TelnetOption.BINARY, true, true)
+    .support(TelnetOption.COMPRESS2, true, false)
+    .support(TelnetOption.ZMP, true, false)
+    .support(TelnetOption.MSSP, true, false)
+    .support(TelnetOption.NEW_ENVIRON, true, false)
+    .support(TelnetOption.TTYPE, true, false)
     .create();
 
   inputFiles.forEach((file) => {
@@ -73,7 +75,11 @@ Telnet.ready.then(() => {
     telnet.on("environ", (event) => {
       writable.write(`Environ: ${EnvironCommand[event.cmd]}\n`);
       event.values.forEach((env) => {
-        writable.write(`  Var: ${env.var} | Value: ${env.value}\n`);
+        writable.write(
+          `  ${EnvironVarType[env.type]}: "${env.var}"${
+            env.value ? ` = "${env.value}"` : ``
+          }\n`,
+        );
       });
     });
     telnet.on("error", (event) =>

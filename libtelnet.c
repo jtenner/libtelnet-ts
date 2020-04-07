@@ -151,7 +151,7 @@ void init() {
 #define NEGOTIATE_EVENT(telnet,cmd,opt) \
 	ev.type = (cmd); \
 	ev.neg.telopt = (opt); \
-	(telnet)->eh((telnet), &ev, (telnet)->ud);
+	generic_event_handler((telnet), &ev);
 
 /* telnet state codes */
 enum telnet_state_t {
@@ -170,12 +170,8 @@ typedef enum telnet_state_t telnet_state_t;
 
 /* telnet state tracker */
 struct telnet_t {
-	/* user data */
-	void *ud;
 	/* telopt support table */
 	const telnet_telopt_t *telopts;
-	/* event handler */
-	telnet_event_handler_t eh;
 #if defined(HAVE_ZLIB)
 	/* zlib (mccp2) compression */
 	z_stream *z;
@@ -245,7 +241,7 @@ static telnet_error_t _error(telnet_t *telnet, unsigned line,
 	ev.error.func = func;
 	ev.error.line = line;
 	ev.error.msg = buffer;
-	telnet->eh(telnet, &ev, telnet->ud);
+	generic_event_handler(telnet, &ev);
 
 	return err;
 }
@@ -326,7 +322,7 @@ static void _send(telnet_t *telnet, const char *buffer,
 			ev.type = TELNET_EV_SEND;
 			ev.data.buffer = deflate_buffer;
 			ev.data.size = sizeof(deflate_buffer) - telnet->z->avail_out;
-			telnet->eh(telnet, &ev, telnet->ud);
+			generic_event_handler(telnet, &ev);
 
 			/* prepare output buffer for next run */
 			telnet->z->next_out = (unsigned char *)deflate_buffer;
@@ -341,7 +337,7 @@ static void _send(telnet_t *telnet, const char *buffer,
 	ev.type = TELNET_EV_SEND;
 	ev.data.buffer = buffer;
 	ev.data.size = size;
-	telnet->eh(telnet, &ev, telnet->ud);
+	generic_event_handler(telnet, &ev);
 }
 
 /* to send bags of unsigned chars */
@@ -646,7 +642,7 @@ static int _environ_telnet(telnet_t *telnet, unsigned char type,
 
 		/* invoke event with our arguments */
 		ev.type = TELNET_EV_ENVIRON;
-		telnet->eh(telnet, &ev, telnet->ud);
+		generic_event_handler(telnet, &ev);
 
 		return 1;
 	}
@@ -748,7 +744,7 @@ static int _environ_telnet(telnet_t *telnet, unsigned char type,
 
 	/* invoke event with our arguments */
 	ev.type = TELNET_EV_ENVIRON;
-	telnet->eh(telnet, &ev, telnet->ud);
+	generic_event_handler(telnet, &ev);
 
 	/* clean up */
 	free(values);
@@ -826,7 +822,7 @@ static int _mssp_telnet(telnet_t *telnet, char* buffer, size_t size) {
 
 	/* invoke event with our arguments */
 	ev.type = TELNET_EV_MSSP;
-	telnet->eh(telnet, &ev, telnet->ud);
+	generic_event_handler(telnet, &ev);
 
 	/* clean up */
 	free(values);
@@ -869,7 +865,7 @@ static int _zmp_telnet(telnet_t *telnet, const char* buffer, size_t size) {
 	ev.type = TELNET_EV_ZMP;
 	ev.zmp.argv = (const char**)argv;
 	ev.zmp.argc = argc;
-	telnet->eh(telnet, &ev, telnet->ud);
+	generic_event_handler(telnet, &ev);
 
 	/* clean up */
 	free(argv);
@@ -911,7 +907,7 @@ static int _ttype_telnet(telnet_t *telnet, const char* buffer, size_t size) {
 		ev.type = TELNET_EV_TTYPE;
 		ev.ttype.cmd = TELNET_TTYPE_IS;
 		ev.ttype.name = name;
-		telnet->eh(telnet, &ev, telnet->ud);
+		generic_event_handler(telnet, &ev);
 
 		/* clean up */
 		free(name);
@@ -919,7 +915,7 @@ static int _ttype_telnet(telnet_t *telnet, const char* buffer, size_t size) {
 		ev.type = TELNET_EV_TTYPE;
 		ev.ttype.cmd = TELNET_TTYPE_SEND;
 		ev.ttype.name = 0;
-		telnet->eh(telnet, &ev, telnet->ud);
+		generic_event_handler(telnet, &ev);
 	}
 
 	return 0;
@@ -936,7 +932,7 @@ static int _subnegotiate(telnet_t *telnet) {
 	ev.sub.telopt = telnet->sb_telopt;
 	ev.sub.buffer = telnet->buffer;
 	ev.sub.size = telnet->buffer_pos;
-	telnet->eh(telnet, &ev, telnet->ud);
+	generic_event_handler(telnet, &ev);
 
 	switch (telnet->sb_telopt) {
 #if defined(HAVE_ZLIB)
@@ -951,7 +947,7 @@ static int _subnegotiate(telnet_t *telnet) {
 			/* notify app that compression was enabled */
 			ev.type = TELNET_EV_COMPRESS;
 			ev.compress.state = 1;
-			telnet->eh(telnet, &ev, telnet->ud);
+			generic_event_handler(telnet, &ev);
 			return 1;
 		}
 		return 0;
@@ -973,21 +969,18 @@ static int _subnegotiate(telnet_t *telnet) {
 	}
 }
 
-EM_JS(void, generic_event_handler, (telnet_t *telnet, telnet_event_t *event, void *user_data), {
-	require("../lib/Telnet").Telnet.route(telnet, event, user_data);
+EM_JS(void, generic_event_handler, (telnet_t *telnet, telnet_event_t *event), {
+	require("../lib/Telnet").Telnet.route(telnet, event);
 });
 
 /* initialize a telnet state tracker */
-telnet_t *telnet_init(const telnet_telopt_t *telopts, unsigned char flags, void *user_data) {
+telnet_t *telnet_init(const telnet_telopt_t *telopts, unsigned char flags) {
 	/* allocate structure */
 	struct telnet_t *telnet = (telnet_t*)calloc(1, sizeof(telnet_t));
 	if (telnet == 0)
 		return 0;
 
-	/* initialize data */
-	telnet->ud = user_data;
 	telnet->telopts = telopts;
-	telnet->eh = *generic_event_handler;
 	telnet->flags = flags;
 
 	return telnet;
@@ -1082,7 +1075,7 @@ static void _process(telnet_t *telnet, const char *buffer, size_t size) {
 					ev.type = TELNET_EV_DATA;
 					ev.data.buffer = buffer + start;
 					ev.data.size = i - start;
-					telnet->eh(telnet, &ev, telnet->ud);
+					generic_event_handler(telnet, &ev);
 				}
 				telnet->state = TELNET_STATE_IAC;
 			} else if (byte == '\r' &&
@@ -1092,7 +1085,7 @@ static void _process(telnet_t *telnet, const char *buffer, size_t size) {
 					ev.type = TELNET_EV_DATA;
 					ev.data.buffer = buffer + start;
 					ev.data.size = i - start;
-					telnet->eh(telnet, &ev, telnet->ud);
+					generic_event_handler(telnet, &ev);
 				}
 				telnet->state = TELNET_STATE_EOL;
 			}
@@ -1105,7 +1098,7 @@ static void _process(telnet_t *telnet, const char *buffer, size_t size) {
 				ev.type = TELNET_EV_DATA;
 				ev.data.buffer = (char*)&byte;
 				ev.data.size = 1;
-				telnet->eh(telnet, &ev, telnet->ud);
+				generic_event_handler(telnet, &ev);
 				byte = buffer[i];
 			}
 			/* any byte following '\r' other than '\n' or '\0' is invalid,
@@ -1143,7 +1136,7 @@ static void _process(telnet_t *telnet, const char *buffer, size_t size) {
 				ev.type = TELNET_EV_DATA;
 				ev.data.buffer = (char*)&byte;
 				ev.data.size = 1;
-				telnet->eh(telnet, &ev, telnet->ud);
+				generic_event_handler(telnet, &ev);
 
 				/* state update */
 				start = i + 1;
@@ -1154,7 +1147,7 @@ static void _process(telnet_t *telnet, const char *buffer, size_t size) {
 				/* event */
 				ev.type = TELNET_EV_IAC;
 				ev.iac.cmd = byte;
-				telnet->eh(telnet, &ev, telnet->ud);
+				generic_event_handler(telnet, &ev);
 
 				/* state update */
 				start = i + 1;
@@ -1269,7 +1262,7 @@ static void _process(telnet_t *telnet, const char *buffer, size_t size) {
 		ev.type = TELNET_EV_DATA;
 		ev.data.buffer = buffer + start;
 		ev.data.size = i - start;
-		telnet->eh(telnet, &ev, telnet->ud);
+		generic_event_handler(telnet, &ev);
 	}
 }
 
@@ -1319,7 +1312,7 @@ void telnet_recv(telnet_t *telnet, const char *buffer,
 				/* send event */
 				ev.type = TELNET_EV_COMPRESS;
 				ev.compress.state = 0;
-				telnet->eh(telnet, &ev, telnet->ud);
+				generic_event_handler(telnet, &ev);
 
 				break;
 			}
@@ -1530,7 +1523,7 @@ void telnet_subnegotiation(telnet_t *telnet, unsigned char telopt,
 		/* notify app that compression was enabled */
 		ev.type = TELNET_EV_COMPRESS;
 		ev.compress.state = 1;
-		telnet->eh(telnet, &ev, telnet->ud);
+		generic_event_handler(telnet, &ev);
 	}
 #endif /* defined(HAVE_ZLIB) */
 }
@@ -1553,12 +1546,12 @@ void telnet_begin_compress2(telnet_t *telnet) {
 	ev.type = TELNET_EV_SEND;
 	ev.data.buffer = (const char*)compress2;
 	ev.data.size = sizeof(compress2);
-	telnet->eh(telnet, &ev, telnet->ud);
+	generic_event_handler(telnet, &ev);
 
 	/* notify app that compression was successfully enabled */
 	ev.type = TELNET_EV_COMPRESS;
 	ev.compress.state = 1;
-	telnet->eh(telnet, &ev, telnet->ud);
+	generic_event_handler(telnet, &ev);
 #else
 	(void)telnet;
 #endif /* defined(HAVE_ZLIB) */
