@@ -145,7 +145,8 @@ export class TelnetEvent {
   /** The telnet event type. */
   public type: TelnetEventType;
 
-  public constructor(public pointer: number, private heap: DataView) {
+  public constructor(public pointer: number) {
+    const heap = new DataView(telnet.HEAPU8.buffer);
     this.type = heap.getUint32(pointer, true);
   }
 
@@ -160,18 +161,19 @@ export class TelnetEvent {
    */
   public get data(): IDataEvent {
     const pointer = this.pointer;
-    const bufferPointer = this.heap.getUint32(
+    const heap = new DataView(telnet.HEAPU8.buffer);
+    const bufferPointer = heap.getUint32(
       pointer + consts.data_t_buffer_offset,
       true,
     );
-    const bufferLength = this.heap.getUint32(
+    const bufferLength = heap.getUint32(
       pointer + consts.data_t_size_offset,
       true,
     );
     return {
       type: this.type as DataEventType,
       buffer: new Uint8Array(
-        this.heap.buffer.slice(bufferPointer, bufferPointer + bufferLength),
+        heap.buffer.slice(bufferPointer, bufferPointer + bufferLength),
       ),
       size: bufferLength,
     };
@@ -190,7 +192,7 @@ export class TelnetEvent {
    * } error;
    */
   public get error(): IErrorEvent {
-    const heap = this.heap;
+    const heap = new DataView(telnet.HEAPU8.buffer);
     const filePointer = heap.getUint32(
       this.pointer + consts.error_t_file_offset,
       true,
@@ -233,7 +235,7 @@ export class TelnetEvent {
   public get iac(): IIACEvent {
     return {
       type: this.type as TelnetEventType.IAC,
-      cmd: this.heap.getUint8(
+      cmd: new DataView(telnet.HEAPU8.buffer).getUint8(
         this.pointer + consts.iac_t_cmd_offset,
       ) as TelnetCommand,
     };
@@ -250,9 +252,7 @@ export class TelnetEvent {
   public get negotiate(): INegotiationEvent {
     return {
       type: this.type as NegotiationEventType,
-      telopt: this.heap.getUint8(
-        this.pointer + consts.negotiate_t_telopt_offset,
-      ),
+      telopt: telnet.HEAPU8[this.pointer + consts.negotiate_t_telopt_offset],
     };
   }
 
@@ -267,7 +267,7 @@ export class TelnetEvent {
    * } sub;
    */
   public get sub(): ISubnegotiationEvent {
-    const heap = this.heap;
+    const heap = new DataView(telnet.HEAPU8.buffer);
     const pointer = this.pointer;
     const bufferPointer = heap.getUint32(
       pointer + consts.subnegotiate_t_buffer_offset,
@@ -281,7 +281,7 @@ export class TelnetEvent {
       pointer + consts.subnegotiate_t_telopt_offset,
     );
     return {
-      buffer: new Uint8Array(this.heap.buffer, bufferPointer, size),
+      buffer: new Uint8Array(heap.buffer, bufferPointer, size),
       size,
       telopt,
       type: this.type as TelnetEventType.SUBNEGOTIATION,
@@ -298,7 +298,7 @@ export class TelnetEvent {
    * } zmp;
    */
   public get zmp(): IZMPEvent {
-    const heap = this.heap;
+    const heap = new DataView(telnet.HEAPU8.buffer);
     const pointer = this.pointer;
     const argc = heap.getUint32(pointer + consts.zmp_t_argc_offset, true);
     // pointer + argv_offset is the memory location for the array of pointers
@@ -336,7 +336,7 @@ export class TelnetEvent {
    * } ttype;
    */
   public get ttype(): ITType {
-    const heap = this.heap;
+    const heap = new DataView(telnet.HEAPU8.buffer);
     const pointer = this.pointer;
     const cmd: TTypeCommand = heap.getUint8(
       pointer + consts.ttype_t_cmd_offset,
@@ -365,8 +365,7 @@ export class TelnetEvent {
   public get compress(): ICompressEvent {
     return {
       type: this.type as TelnetEventType.COMPRESS,
-      state:
-        this.heap.getUint8(this.pointer + consts.compress_t_state_offset) === 1,
+      state: telnet.HEAPU8[this.pointer + consts.compress_t_state_offset] === 1,
     };
   }
 
@@ -382,7 +381,7 @@ export class TelnetEvent {
    */
   public get environ(): IEnvironEvent {
     const pointer = this.pointer;
-    const heap = this.heap;
+    const heap = new DataView(telnet.HEAPU8.buffer);
     const cmd: EnvironCommand = heap.getUint8(
       pointer + consts.environ_t_cmd_offset,
     );
@@ -412,7 +411,7 @@ export class TelnetEvent {
    */
   public get mssp(): IMSSPEvent {
     const pointer = this.pointer;
-    const heap = this.heap;
+    const heap = new DataView(telnet.HEAPU8.buffer);
     const size = heap.getUint32(pointer + consts.mssp_t_size_offset, true);
     const valuesPointer = heap.getUint32(
       pointer + consts.mssp_t_values_offset,
