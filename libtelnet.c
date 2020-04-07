@@ -102,6 +102,10 @@ EM_JS(void, _init, (
   a.telnet_telopt_t_him_offset = telnet_telopt_t_him_offset;
 });
 
+EM_JS(void, trace_func, (const char *message, int one, int two), {
+  console.log(AsciiToString(message), one, two);
+});
+
 void init() {
 	_init(
 		offsetof(struct data_t, buffer),
@@ -358,12 +362,13 @@ static INLINE int _check_telopt(telnet_t *telnet, unsigned char telopt,
 	/* loop until found or end marker (us and him both 0) */
 	for (i = 0; telnet->telopts[i].telopt != -1; ++i) {
 		if (telnet->telopts[i].telopt == telopt) {
-			if (us && telnet->telopts[i].us == TELNET_WILL)
+			if (us && telnet->telopts[i].us == TELNET_WILL) {
 				return 1;
-			else if (!us && telnet->telopts[i].him == TELNET_DO)
+			} else if (!us && telnet->telopts[i].him == TELNET_DO) {
 				return 1;
-			else
+			} else {
 				return 0;
+			}
 		}
 	}
 

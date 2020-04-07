@@ -1,3 +1,5 @@
-Send: "��]" = [bytes] 255,252,93
-Send: "��]" = [bytes] 255,252,93
+Send: "��]" = [bytes] 255,251,93
+Negotiate: DO ZMP
 Send: "��" = [bytes] 255,252,31
+Send: "��]" = [bytes] 255,252,93
+Negotiate: DONT ZMP
