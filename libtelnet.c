@@ -102,10 +102,9 @@ EM_JS(void, _init, (
   a.telnet_telopt_t_him_offset = telnet_telopt_t_him_offset;
 });
 
-EM_JS(void, trace, (const char *message, int one, int two), {
+EM_JS(void, trace_func, (const char *message, int one, int two), {
   console.log(AsciiToString(message), one, two);
 });
-
 
 void init() {
 	_init(
