@@ -152,7 +152,7 @@ export class Telnet extends EventEmitter {
 
   /** Create a TelnetEvent from a given pointer. */
   public static getEvent(pointer: number): TelnetEvent {
-    return new TelnetEvent(pointer, new DataView(telnet.HEAPU8.buffer));
+    return new TelnetEvent(pointer);
   }
 
   /** This is an internal pointer to the heap where the telnet object is contained in c. */

@@ -34,6 +34,54 @@ visit the following websites:
 
 The TS api is a simple wrapper for the libtelnet package.
 
+### III.a TS Example Echo Server
+
+```ts
+import { Telnet, CompatibilityTable } from "libtelnet-ts";
+
+import net from "net";
+
+const server = net.createServer();
+
+let table;
+
+server.on("connection", (socket) => {
+  const telnet = new Telnet(table);
+
+  // all bytes must immediately pass through telnet as a Buffer or Uint8Array
+  socket.on("data", (bytes) => {
+    telnet.receive(bytes);
+  });
+
+  // any bytes that should be sent to the client must pass through the telnet protocol
+  telnet.on("send", (event) => {
+    socket.write(event.buffer);
+  });
+
+  // sanitized data and properly escaped from telnet
+  telnet.on("data", (event) => {
+    // inspect the incoming bytes by writing them to stdout
+    process.stdout.write(event.buffer);
+
+    // this data should be sent back to the client, send the bytes through telnet
+    telnet.send(event.buffer);
+  });
+
+  // always call telnet.dispose() when a socket closees
+  socket.on("close", () => {
+    telnet.dispose();
+  });
+});
+
+Telnet.ready.then((e) => {
+  // must wait for the runtime to initialize
+  table = CompatibilityTable.create()
+    .support(TelnetOption.ECHO, true, false) // local and remote echo
+    .finish();
+  server.listen(1234);
+});
+```
+
 ## III. C API
 
 The libtelnet API contains several distinct parts. The first part is
