@@ -143,7 +143,11 @@ Telnet.ready.then(() => {
 
         for (let i = 0; i < changes.length; i++) {
           const change = changes[i];
-          const lineStart = change.added ? "\n+ " : change.removed ? "\n- " : "\n  ";
+          const lineStart = change.added
+            ? "\n+ "
+            : change.removed
+            ? "\n- "
+            : "\n  ";
           process.stdout.write(
             `${lineStart}${change.value.split("\n").join(lineStart)}`,
           );
