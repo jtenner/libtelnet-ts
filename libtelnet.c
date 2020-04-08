@@ -193,7 +193,6 @@ struct telnet_t {
 
 /* RFC1143 option negotiation state */
 typedef struct telnet_rfc1143_t {
-	unsigned char telopt;
 	unsigned char state;
 } telnet_rfc1143_t;
 
@@ -338,95 +337,36 @@ static void _send(telnet_t *telnet, const char *buffer,
 /* to send bags of unsigned chars */
 #define _sendu(t, d, s) _send((t), (const char*)(d), (s))
 
-/* check if we support a particular telopt; if us is non-zero, we
- * check if we (local) supports it, otherwise we check if he (remote)
- * supports it.  return non-zero if supported, zero if not supported.
- */
-static INLINE int _check_telopt(telnet_t *telnet, unsigned char telopt,
-		int us) {
-	int i;
-
+/* Check to see if we support a telnet option locally. */
+static INLINE int _check_telopt_us(telnet_t *telnet, unsigned char telopt) {
 	/* if we have no telopts table, we obviously don't support it */
 	if (telnet->telopts == 0)
 		return 0;
-
-	unsigned char option = telnet->telopts[telopt];
-
-	if (us && (option & TELNET_SUPPORT_LOCAL)) {
-		return 1;
-	} else if (!us && (option & TELNET_SUPPORT_REMOTE)) {
-		return 1;
-	}
-	return 0;
+	
+	return telnet->telopts[telopt] & TELNET_SUPPORT_LOCAL;
 }
 
-/* retrieve RFC1143 option state */
-static INLINE telnet_rfc1143_t _get_rfc1143(telnet_t *telnet,
-		unsigned char telopt) {
-	telnet_rfc1143_t empty;
-	unsigned int i;
-
-	/* search for entry */
-	for (i = 0; i != telnet->q_cnt; ++i) {
-		if (telnet->q[i].telopt == telopt) {
-			return telnet->q[i];
-		}
-	}
-
-	/* not found, return empty value */
- 	empty.telopt = telopt;
-	empty.state = 0;
-	return empty;
+/* Check to see if we support a telnet option remotely. */
+static INLINE int _check_telopt_him(telnet_t *telnet, unsigned char telopt) {
+	/* if we have no telopts table, we obviously don't support it */
+	if (telnet->telopts == 0)
+		return 0;
+	
+	return telnet->telopts[telopt] & TELNET_SUPPORT_REMOTE;
 }
 
 /* save RFC1143 option state */
 static INLINE void _set_rfc1143(telnet_t *telnet, unsigned char telopt,
 		char us, char him) {
-	telnet_rfc1143_t *qtmp;
-	unsigned int i;
-
-	/* search for entry */
-	for (i = 0; i != telnet->q_cnt; ++i) {
-		if (telnet->q[i].telopt == telopt) {
-			telnet->q[i].state = Q_MAKE(us,him);
-			if (telopt != TELNET_TELOPT_BINARY)
-				return;
-			telnet->flags &= ~(TELNET_FLAG_TRANSMIT_BINARY |
-					   TELNET_FLAG_RECEIVE_BINARY);
-			if (us == Q_YES)
-				telnet->flags |= TELNET_FLAG_TRANSMIT_BINARY;
-			if (him == Q_YES)
-				telnet->flags |= TELNET_FLAG_RECEIVE_BINARY;
-			return;
-		}
-	}
-
-	/* we're going to need to track state for it, so grow the queue
-	 * by 4 (four) elements and put the telopt into it; bail on allocation
-	 * error.  we go by four because it seems like a reasonable guess as
-	 * to the number of enabled options for most simple code, and it
-	 * allows for an acceptable number of reallocations for complex code.
-	 */
-
-    /* Did we reach the end of the table? */
-	if (telnet->q_cnt >= telnet->q_size) {
-		/* Expand the size */
-		if ((qtmp = (telnet_rfc1143_t *)realloc(telnet->q,
-			sizeof(telnet_rfc1143_t) *
-            	(telnet->q_size + Q_BUFFER_GROWTH_QUANTUM))) == 0) {
-			_error(telnet, __LINE__, __func__, TELNET_ENOMEM, 0,
-					"realloc() failed: %s", strerror(errno));
-			return;
-		}
-		memset(&qtmp[telnet->q_size], 0, sizeof(telnet_rfc1143_t) *
-			Q_BUFFER_GROWTH_QUANTUM);
-		telnet->q = qtmp;
-		telnet->q_size += Q_BUFFER_GROWTH_QUANTUM;
-	}
-	/* Add entry to end of table */
-	telnet->q[telnet->q_cnt].telopt = telopt;
-	telnet->q[telnet->q_cnt].state = Q_MAKE(us, him);
-	++telnet->q_cnt;
+	telnet->q[telopt].state = Q_MAKE(us,him);
+	if (telopt != TELNET_TELOPT_BINARY)
+		return;
+	telnet->flags &= ~(TELNET_FLAG_TRANSMIT_BINARY |
+					TELNET_FLAG_RECEIVE_BINARY);
+	if (us == Q_YES)
+		telnet->flags |= TELNET_FLAG_TRANSMIT_BINARY;
+	if (him == Q_YES)
+		telnet->flags |= TELNET_FLAG_RECEIVE_BINARY;
 }
 
 /* send negotiation bytes */
@@ -464,7 +404,7 @@ static void _negotiate(telnet_t *telnet, unsigned char telopt) {
 	}
 
 	/* lookup the current state of the option */
-	q = _get_rfc1143(telnet, telopt);
+	q = telnet->q[telopt];
 
 	/* start processing... */
 	switch ((int)telnet->state) {
@@ -472,7 +412,7 @@ static void _negotiate(telnet_t *telnet, unsigned char telopt) {
 	case TELNET_STATE_WILL:
 		switch (Q_HIM(q)) {
 		case Q_NO:
-			if (_check_telopt(telnet, telopt, 0)) {
+			if (_check_telopt_him(telnet, telopt)) {
 				_set_rfc1143(telnet, telopt, Q_US(q), Q_YES);
 				_send_negotiate(telnet, TELNET_DO, telopt);
 				NEGOTIATE_EVENT(telnet, TELNET_EV_WILL, telopt);
@@ -530,7 +470,7 @@ static void _negotiate(telnet_t *telnet, unsigned char telopt) {
 	case TELNET_STATE_DO:
 		switch (Q_US(q)) {
 		case Q_NO:
-			if (_check_telopt(telnet, telopt, 1)) {
+			if (_check_telopt_us(telnet, telopt)) {
 				_set_rfc1143(telnet, telopt, Q_YES, Q_HIM(q));
 				_send_negotiate(telnet, TELNET_WILL, telopt);
 				NEGOTIATE_EVENT(telnet, TELNET_EV_DO, telopt);
@@ -969,9 +909,11 @@ telnet_t *telnet_init(const unsigned char *telopts, unsigned char flags) {
 	if (telnet == 0)
 		return 0;
 
+	struct telnet_rfc1143_t *q = (telnet_rfc1143_t*)calloc(256, sizeof(telnet_rfc1143_t));
+
 	telnet->telopts = telopts;
 	telnet->flags = flags;
-
+	telnet->q = q;
 	return telnet;
 }
 
@@ -1001,8 +943,6 @@ void telnet_free(telnet_t *telnet) {
 	if (telnet->q) {
 		free(telnet->q);
 		telnet->q = NULL;
-		telnet->q_size = 0;
-		telnet->q_cnt = 0;
 	}
 
 	/* free the telnet structure itself */
@@ -1337,7 +1277,7 @@ void telnet_negotiate(telnet_t *telnet, unsigned char cmd,
 	}
 
 	/* get current option states */
-	q = _get_rfc1143(telnet, telopt);
+	q = telnet->q[telopt];
 
 	switch (cmd) {
 	/* advertise willingess to support an option */
