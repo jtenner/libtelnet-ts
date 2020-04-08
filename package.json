@@ -17,7 +17,7 @@
     "tsc": "tsc",
     "docs": "run-s rimraf-doc typedoc",
     "prettier": "prettier --write .",
-    "test": "node test/telnet-test",
+    "test": "node test/telnet",
     "update-snapshots": "node test/telnet-test --create",
     "pre-commit": "run-s build:release test"
   },

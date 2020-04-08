@@ -66,10 +66,7 @@ EM_JS(void, _init, (
 	int telnet_environ_t_var_offset,
 	int telnet_environ_t_value_offset,
 	int mssp_t_values_offset,
-	int mssp_t_size_offset,
-	int telnet_telopt_t_telopt_offset,
-	int telnet_telopt_t_us_offset,
-	int telnet_telopt_t_him_offset
+	int mssp_t_size_offset
 ), {
 	const a = require("../lib/consts").consts;
 	a.data_t_buffer_offset = data_t_buffer_offset;
@@ -97,9 +94,6 @@ EM_JS(void, _init, (
 	a.telnet_environ_t_value_offset = telnet_environ_t_value_offset;
 	a.mssp_t_values_offset = mssp_t_values_offset;
   a.mssp_t_size_offset = mssp_t_size_offset;
-	a.telnet_telopt_t_telopt_offset = telnet_telopt_t_telopt_offset;
-  a.telnet_telopt_t_us_offset = telnet_telopt_t_us_offset;
-  a.telnet_telopt_t_him_offset = telnet_telopt_t_him_offset;
 });
 
 EM_JS(void, trace_func, (const char *message, int one, int two), {
@@ -132,10 +126,7 @@ void init() {
 		offsetof(struct telnet_environ_t, var),
 		offsetof(struct telnet_environ_t, value),
 		offsetof(struct mssp_t, values),
-		offsetof(struct mssp_t, size),
-		offsetof(struct telnet_telopt_t, telopt),
-		offsetof(struct telnet_telopt_t, us),
-		offsetof(struct telnet_telopt_t, him)
+		offsetof(struct mssp_t, size)
 	);
 }
 
@@ -175,7 +166,7 @@ typedef enum telnet_state_t telnet_state_t;
 /* telnet state tracker */
 struct telnet_t {
 	/* telopt support table */
-	const telnet_telopt_t *telopts;
+	const unsigned char *telopts;
 #if defined(HAVE_ZLIB)
 	/* zlib (mccp2) compression */
 	z_stream *z;
@@ -359,20 +350,13 @@ static INLINE int _check_telopt(telnet_t *telnet, unsigned char telopt,
 	if (telnet->telopts == 0)
 		return 0;
 
-	/* loop until found or end marker (us and him both 0) */
-	for (i = 0; telnet->telopts[i].telopt != -1; ++i) {
-		if (telnet->telopts[i].telopt == telopt) {
-			if (us && telnet->telopts[i].us == TELNET_WILL) {
-				return 1;
-			} else if (!us && telnet->telopts[i].him == TELNET_DO) {
-				return 1;
-			} else {
-				return 0;
-			}
-		}
-	}
+	unsigned char option = telnet->telopts[telopt];
 
-	/* not found, so not supported */
+	if (us && (option & TELNET_SUPPORT_LOCAL)) {
+		return 1;
+	} else if (!us && (option & TELNET_SUPPORT_REMOTE)) {
+		return 1;
+	}
 	return 0;
 }
 
@@ -979,7 +963,7 @@ EM_JS(void, generic_event_handler, (telnet_t *telnet, telnet_event_t *event), {
 });
 
 /* initialize a telnet state tracker */
-telnet_t *telnet_init(const telnet_telopt_t *telopts, unsigned char flags) {
+telnet_t *telnet_init(const unsigned char *telopts, unsigned char flags) {
 	/* allocate structure */
 	struct telnet_t *telnet = (telnet_t*)calloc(1, sizeof(telnet_t));
 	if (telnet == 0)
