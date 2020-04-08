@@ -213,9 +213,6 @@ static const size_t _buffer_sizes[] = { 0, 512, 2048, 8192, 16384, };
 static const size_t _buffer_sizes_count = sizeof(_buffer_sizes) /
 		sizeof(_buffer_sizes[0]);
 
-/* RFC1143 option negotiation state table allocation quantum */
-#define Q_BUFFER_GROWTH_QUANTUM 4
-
 /* error generation function */
 static telnet_error_t _error(telnet_t *telnet, unsigned line,
 		const char* func, telnet_error_t err, int fatal, const char *fmt,
