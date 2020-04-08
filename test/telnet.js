@@ -140,13 +140,10 @@ Telnet.ready.then(() => {
 
         for (let i = 0; i < changes.length; i++) {
           const change = changes[i];
-          if (change.added) {
-            process.stdout.write(`+ ${change.value.split("\n").join("\n+ ")}`);
-          } else if (change.removed) {
-            process.stdout.write(`- ${change.value.split("\n").join("\n- ")}`);
-          } else {
-            process.stdout.write(`  ${change.value.split("\n").join("  ")}`);
-          }
+          const char = change.added ? "+" : change.removed ? "-" : " ";
+          process.stdout.write(
+            `${char} ${change.value.split("\n").join(`\n${char} `)}`,
+          );
         }
 
         process.exit(1);
