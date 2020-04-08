@@ -43,7 +43,7 @@ export class CompatibilityTable {
 
       // set the telopt option value
       // support local | remote
-      heap[entryPointer] = (entry[1] ? 3 : 0) | (entry[2] ? 1 : 0);
+      heap[entryPointer] = (entry[1] ? 0b10 : 0) | (entry[2] ? 0b01 : 0);
     }
 
     this.pointer = arrayPointer;
