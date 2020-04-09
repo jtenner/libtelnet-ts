@@ -556,13 +556,14 @@ generated automatically by scripts, triggers, or macros.
 
 For a server, any and all output -- including ANSI/VT100 escape
 codes, regular text, newlines, and so on -- must be passed through to
-`telnet.send().
+`telnet.send()`.
 
 Any TELNET commands that are to be sent must be given to one of the
-following: telnet_iac, telnet_negotiate, or telnet_subnegotiation().
+following functions: `telnet.iac()`, `telnet.negotiate()`,
+or `telnet.subnegotiate()`.
 
 If you are attempting to enable COMPRESS2/MCCP2, you must use the
-telnet_begin_compress2() function.
+`telnet.beginCompress2()` function.
 
 ## V. MCCP2 compression
 
