@@ -259,7 +259,7 @@ export class Telnet extends EventEmitter {
     let strPtr = telnet._malloc(command.length + 1);
     telnet.writeAsciiToMemory(strPtr, command, false);
     heap.setUint32(argvPointer, strPtr, true);
-    
+
     const toFree = [argvPointer, strPtr];
 
     for (let i = 0; i < args.length; i++) {
