@@ -16,7 +16,13 @@ const path = require("path");
 const diff = require("diff");
 
 function bytesToString(bytes) {
-  return `"` + Buffer.from(bytes).toString().replace(/"/g, `\\"`) + `"`;
+  return Array.from(bytes)
+    .map((e) =>
+      (e >= 33 && e <= 126) || e == 0x20
+        ? String.fromCharCode(e)
+        : `%${e.toString(16).toUpperCase().padStart(2, "0")}`,
+    )
+    .join("");
 }
 
 function createWritable() {
@@ -59,18 +65,10 @@ Telnet.ready.then(() => {
       writable.write(`Compression: ${event.state}\n`),
     );
     telnet.on("send", (event) => {
-      writable.write(
-        `Send: ${bytesToString(event.buffer)} = [bytes] ${Array.from(
-          event.buffer,
-        )}\n`,
-      );
+      writable.write(`Send: ${bytesToString(event.buffer)}\n`);
     });
     telnet.on("data", (event) => {
-      writable.write(
-        `Data: ${bytesToString(event.buffer)} = [bytes] ${Array.from(
-          event.buffer,
-        )}\n`,
-      );
+      writable.write(`Data: ${bytesToString(event.buffer)}\n`);
     });
     telnet.on("environ", (event) => {
       writable.write(`Environ: ${EnvironCommand[event.cmd]}\n`);
