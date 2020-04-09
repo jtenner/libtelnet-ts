@@ -532,32 +532,27 @@ telnet.on(<span class="hljs-string">"error"</span>, <span class="hljs-function">
 					of libtelnet always make use of the libtelnet output functions for
 				all data being sent over the TELNET connection.</p>
 				<p>In particular, if you are writing a client, all user input must be
-					passed through to telnet_send(). This also includes any input
+					passed through to <code>telnet.send()</code>. This also includes any input
 				generated automatically by scripts, triggers, or macros.</p>
 				<p>For a server, any and all output -- including ANSI/VT100 escape
 					codes, regular text, newlines, and so on -- must be passed through to
-				telnet_send().</p>
+				<code>telnet.send()</code>.</p>
 				<p>Any TELNET commands that are to be sent must be given to one of the
-				following: telnet_iac, telnet_negotiate, or telnet_subnegotiation().</p>
+					following functions: <code>telnet.iac()</code>, <code>telnet.negotiate()</code>,
+				or <code>telnet.subnegotiate()</code>.</p>
 				<p>If you are attempting to enable COMPRESS2/MCCP2, you must use the
-				telnet_begin_compress2() function.</p>
+				<code>telnet.beginCompress2()</code> function.</p>
 				<a href="#v-mccp2-compression" id="v-mccp2-compression" style="color: inherit; text-decoration: none;">
 					<h2>V. MCCP2 compression</h2>
 				</a>
-				<p>This feature is not enabled for libtelnet-ts yet, but the following
-				docs and methods will be enabled soon.</p>
 				<p>The MCCP2 (COMPRESS2) TELNET extension allows for the compression of
 				all traffic sent from server to client. For more information:</p>
 				<p><a href="http://www.mudbytes.net/index.php?a=articles&amp;s=mccp">http://www.mudbytes.net/index.php?a=articles&amp;s=mccp</a></p>
-				<p>In order for libtelnet to support MCCP2, zlib must be installed and
-					enabled when compiling libtelnet. Use -DHAVE_ZLIB to enable zlib
-					when compiling libtelnet.c and pass -lz to the linker to link in the
-				zlib shared library.</p>
-				<p>libtelnet transparently supports MCCP2. For a server to support
+				<p><code>libtelnet-ts</code> transparently supports MCCP2. For a server to support
 					MCCP2, the application must begin negotiation of the COMPRESS2 option
 				using telnet_negotiate(), for example:</p>
 				<p><code>telnet.negotiate(TelnetCommand.WILL, TelnetOption.COMPRESS2);</code></p>
-				<p>If a favorable DO COMPRESS2 is sent back from the client then the
+				<p>If a favorable <code>DO COMPRESS2</code> is sent back from the client then the
 					server application can begin compression at any time by calling
 				`telnet.beginCompress2().</p>
 				<p>If a connection is in PROXY mode and COMPRESS2 support is enabled
@@ -589,18 +584,15 @@ telnet.on(<span class="hljs-string">"error"</span>, <span class="hljs-function">
 					parameters will be placed in the <code>event.argv</code> array and the number of
 				parameters will be placed in the <code>event.argc</code> field.</p>
 				<p>NOTE: if an error occured while parsing the ZMP command because it
-					was malformed, the event-&gt;argc field will be equal to 0 and the
-					event-&gt;argv field will be NULL. You should always check for this
+					was malformed, the <code>event.argc</code> field will be equal to 0 and the
+					<code>event.argv</code> field will be <code>null</code>. You should always check for this
 				before attempting to access the parameter array.</p>
 				<p>To send ZMP commands to the remote end, use <code>telnet.sendzmp()</code>.</p>
 				<ul>
-					<li><p><code>int telnet_send_zmp(telnet_t *telnet, size_t argv, const char **argv);</code></p>
-						<p>Sends a ZMP command to the remote end. The argc parameter is the
-							number of ZMP parameters (including the command name!) to be sent.
-							The argv parameter is an array of strings containing the
-							parameters. The element in argv[0] is the command name itself.
-							The argv array must have at least as many elements as the value
-						argc.</p>
+					<li><p><code>telnet.zmp(command: string, argv: string[]): void;</code></p>
+						<p>Sends a ZMP command to the remote end. The command parameter
+							is required, but the argv parameter is optional. The argv array
+						contains the parameters.</p>
 					</li>
 				</ul>
 				<a href="#vii-mud-server-status-protocol-mssp-support" id="vii-mud-server-status-protocol-mssp-support" style="color: inherit; text-decoration: none;">
@@ -710,6 +702,9 @@ telnet.on(<span class="hljs-string">"error"</span>, <span class="hljs-function">
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#telnet" class="tsd-kind-icon">telnet</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#freeit" class="tsd-kind-icon">free<wbr>It</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#getenvironvars" class="tsd-kind-icon">get<wbr>Environ<wbr>Vars</a>
