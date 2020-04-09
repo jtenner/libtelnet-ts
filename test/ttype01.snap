@@ -1,8 +1,8 @@
-Subnegotiation: TTYPE 1
+Subnegotiation: TTYPE %01
 TType: SEND 
-Subnegotiation: TTYPE 0,120,116,101,114,109
+Subnegotiation: TTYPE %00xterm
 TType: IS xterm
-Subnegotiation: TTYPE 0
+Subnegotiation: TTYPE %00
 TType: IS 
-Subnegotiation: TTYPE 1,120,116,101,114,109
+Subnegotiation: TTYPE %01xterm
 TType: SEND 
