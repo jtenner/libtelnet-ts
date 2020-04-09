@@ -64,11 +64,11 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<p><a href="https://github.com/seanmiddleditch/libtelnet/actions"><img src="https://github.com/seanmiddleditch/libtelnet/workflows/CI/badge.svg" alt="Actions Status"></a></p>
+				<p><a href="https://github.com/jtenner/libtelnet-ts/actions"><img src="https://github.com/jtenner/libtelnet-ts/workflows/CI/badge.svg" alt="Actions Status"></a></p>
 				<a href="#libtelnet---telnet-protocol-handling-library" id="libtelnet---telnet-protocol-handling-library" style="color: inherit; text-decoration: none;">
 					<h1>libtelnet - TELNET protocol handling library</h1>
 				</a>
-				<p><a href="http://github.com/seanmiddleditch/libtelnet">http://github.com/seanmiddleditch/libtelnet</a></p>
+				<p>See the original <code>c</code> implementation here: <a href="http://github.com/seanmiddleditch/libtelnet">http://github.com/seanmiddleditch/libtelnet</a></p>
 				<p>Sean Middleditch and contributors</p>
 				<p>The author or authors of this code dedicate any and all copyright
 					interest in this code to the public domain. We make this dedication
@@ -97,8 +97,8 @@
 					<h2>II. TS API</h2>
 				</a>
 				<p>The TS api is a simple wrapper for the libtelnet package.</p>
-				<a href="#iiia-ts-example-echo-server" id="iiia-ts-example-echo-server" style="color: inherit; text-decoration: none;">
-					<h3>III.a TS Example Echo Server</h3>
+				<a href="#iia-ts-example-echo-server" id="iia-ts-example-echo-server" style="color: inherit; text-decoration: none;">
+					<h3>II.a TS Example Echo Server</h3>
 				</a>
 				<pre><code class="language-ts"><span class="hljs-keyword">import</span> { Telnet, CompatibilityTable, TelnetOption } <span class="hljs-keyword">from</span> <span class="hljs-string">"libtelnet-ts"</span>;
 
@@ -137,20 +137,20 @@ server.on(<span class="hljs-string">"connection"</span>, <span class="hljs-funct
 });
 
 Telnet.ready.then(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> {
-  <span class="hljs-comment">// must wait for the runtime to initialize</span>
+  <span class="hljs-comment">// must wait for the runtime to initialize the table</span>
   table = CompatibilityTable.create()
     .support(TelnetOption.ECHO, <span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>) <span class="hljs-comment">// local and remote echo</span>
     .finish();
   server.listen(<span class="hljs-number">1234</span>);
 });</code></pre>
-				<a href="#iii-c-api" id="iii-c-api" style="color: inherit; text-decoration: none;">
-					<h2>III. C API</h2>
+				<a href="#iib-notes-regarding-usage" id="iib-notes-regarding-usage" style="color: inherit; text-decoration: none;">
+					<h3>II.b Notes Regarding Usage</h3>
 				</a>
-				<p>The libtelnet API contains several distinct parts. The first part is
-					the basic initialization and deinitialization routines. The second
-					part is a single function for pushing received data into the telnet
-					processor. The third part is the libtelnet output functions, which
-					generate TELNET commands and ensure data is properly formatted before
+				<p>The libtelnet-ts API contains several distinct parts. The
+					first part is the constructor and dispose methods. The
+					second part is methods for pushing to the telnet processor.
+					The third part is the output functions, which generate
+					TELNET commands and ensure data is properly formatted before
 					sending over the wire. The final part is the event handler
 				interface.</p>
 				<p>This document covers only the most basic functions. See the
@@ -159,72 +159,64 @@ Telnet.ready.then(<span class="hljs-function">(<span class="hljs-params">e</span
 				<a href="#iiia-initialization" id="iiia-initialization" style="color: inherit; text-decoration: none;">
 					<h4>IIIa. Initialization</h4>
 				</a>
-				<p>Using libtelnet requires the initialization of a telnet_t structure
-				which stores all current state for a single TELNET connection.</p>
-				<p>Initializing a telnet_t structure requires several pieces of data.
-					One of these is the telopt support table, which specifies which
-					TELNET options your application supports both locally and remotely.
-					This table is comprised of telnet_telopt_t structures, one for each
-					supported option. Each entry specifies the option supported,
+				<p>Using libtelnet requires the initialization of a <code>Telnet</code> class
+					which references a <code>telnet_t</code> struct inside Web Assembly for all
+				current option states for a single TELNET connection.</p>
+				<p>Initializing a <code>Telnet</code> object requires several pieces of data.
+					One of these is a <code>CompatibilityTable</code> support reference, which
+					specifies which TELNET options your application supports both
+					locally and remotely. This table is comprised of entries, one for
+					each supported option. Each entry specifies the option supported,
 				whether the option is supported locally or remotely.</p>
-				<pre><code class="language-c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">telnet_telopt_t</span> {</span>
-    short telopt;
-    <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span> us;
-    <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span> him;
-};</code></pre>
-				<p>The us field denotes whether your application supports the telopt
-					locally. It should be set to TELNET_WILL if you support it and to
-					TELNET_WONT if you don&#39;t. The him field denotes whether the telopt
-					is supported on the remote end, and should be TELNET_DO if yes and
-				TELNET_DONT if not.</p>
-				<p>When definition the telopt table you must include an end marker
-					entry, which is simply an entry with telopt set to -1. For
-				example:</p>
-				<pre><code class="language-c"><span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">telnet_telopt_t</span> my_telopts[] = {
-    { TELNET_TELOPT_ECHO,      TELNET_WILL, TELNET_DONT },
-    { TELNET_TELOPT_TTYPE,     TELNET_WILL, TELNET_DONT },
-    { TELNET_TELOPT_COMPRESS2, TELNET_WONT, TELNET_DO   },
-    { TELNET_TELOPT_ZMP,       TELNET_WONT, TELNET_DO   },
-    { TELNET_TELOPT_MSSP,      TELNET_WONT, TELNET_DO   },
-    { TELNET_TELOPT_BINARY,    TELNET_WILL, TELNET_DO   },
-    { TELNET_TELOPT_NAWS,      TELNET_WILL, TELNET_DONT },
-    { <span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span> }
-};</code></pre>
+				<pre><code class="language-ts"><span class="hljs-keyword">import</span> { Telnet, CompatibilityTable, TelnetOption } <span class="hljs-keyword">from</span> <span class="hljs-string">"libtelnet-ts"</span>;
+
+<span class="hljs-keyword">let</span> table;
+
+Telnet.ready.then(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> {
+  <span class="hljs-comment">// choose whatever options you want to support here</span>
+  table = CompatiblityTable.create()
+    .supprt(TelnetOption.BINARY, localSupport, remoteSupport)
+    <span class="hljs-comment">// write the table into web assembly</span>
+    .finish();
+});</code></pre>
+				<p>The <code>local</code> parameter denotes whether your application supports
+					the option locally. It should be set to <code>true</code> if you support it
+					and to <code>false</code> if you don&#39;t. The remote field denotes whether the
+					option is supported on the remote end, and should be <code>true</code> if yes
+				and <code>false</code> if not.</p>
+				<p>You must always call <code>finish()</code> or the table will not be used.</p>
 				<p>If you need to dynamically alter supported options on a
 					per-connection basis then you may use a different table
-					(dynamically allocated if necessary) per call to telnet_init() or
+					(dynamically allocated if necessary) per call to <code>new Telnet()</code> or
 					you share a single constant table like the above example between
 					all connections if you support a fixed set of options. Most
-				applications will support only a fixed set of options.</p>
+					applications will support only a fixed set of options. Please note
+					that you must deallocate each created table when the connection is
+					disposed by calling <code>compatibliityTable.dispose()</code> or you will have
+				a very large memory leak in your application.</p>
 				<ul>
-					<li><p><code>telnet_t *telnet_init(const telnet_telopts_t *telopts, telnet_event_handler_t handler, unsigned char flags, void *user_data);</code></p>
-						<p>The telnet_init() function is responsible for allocating memory
-							and initializing the data in a telnet_t structure. It must be
-							called immediately after establishing a connection and before any
-						other libtelnet API calls are made.</p>
-						<p>The telopts field is the telopt support table as described above.</p>
-						<p>The handler parameter must be a function matching the
-							telnet_event_handler_t definition. More information about events
-						can be found in section IId.</p>
-						<p>The user_data parameter is passed to the event handler whenver it
-							is invoked. This will usually be a structure container
-							information about the connection, including a socket descriptor
-						for implementing TELNET_EV_SEND event handling.</p>
+					<li><p><code>new Telnet(table, flags);</code></p>
+						<p>The <code>Telnet</code> constructor is responsible for allocating memory
+							and initializing the data in a telnet_t structure inside web
+							assembly. It must be called immediately after establishing a
+						connection.</p>
+						<p>The <code>table</code> field is a <code>CompatibilityTable</code> reference as
+						described above.</p>
 						<p>The flags parameter can be any of the following flag constants
 						bit-or&#39;d together, or 0 to leave all options disabled.</p>
-						<p>TELNET_FLAG_PROXY
+						<p><code>TelnetFlag.PROXY</code>
 							Operate in proxy mode. This disables the RFC1143 support and
 						enables automatic detection of COMPRESS2 streams.</p>
-						<p>TELNET_FLAG_NVT_EOL
+						<p><code>TelnetFlag.NVT_EOL</code>
 							Receive data with translation of the TELNET NVT CR NUL and CR LF
 							sequences specified in RFC854 to C carriage return (\r) and C
 						newline (\n), respectively.</p>
-						<p>If telnet_init() fails to allocate the required memory, the
-						returned pointer will be zero.</p>
+						<p>If the <code>Telnet</code> constructor fails to allocate the required memory,
+						the returned pointer will be zero, and throw a runtime error.</p>
 					</li>
-					<li><p><code>void telnet_free(telnet_t *telnet);</code></p>
-						<p>Releases any internal memory allocated by libtelnet for the given
-							telnet pointer. This must be called whenever a connection is
+					<li><p><code>telnet.dispose()</code></p>
+						<p>Releases any internal memory allocated by libtelnet-ts for the given
+							<code>Telnet</code> object. This must be called whenever a connection is
 							closed, or you will incur memory leaks. The pointer passed in may
 						no longer be used afterwards.</p>
 					</li>
@@ -233,106 +225,89 @@ Telnet.ready.then(<span class="hljs-function">(<span class="hljs-params">e</span
 					<h4>IIIb. Receiving Data</h4>
 				</a>
 				<ul>
-					<li><p><code>void telnet_recv(telnet_t *telnet, const char *buffer, unsigned int size, void *user_data);</code></p>
+					<li><p><code>telnet.receive(bytes: ArrayLike&lt;number&gt;): void</code></p>
 						<p>When your application receives data over the socket from the
 						remote end, it must pass the received bytes into this function.</p>
-						<p>As the TELNET stream is parsed, events will be generated and
-							passed to the event handler given to telnet_init(). Of particular
-							interest for data receiving is the TELNET_EV_DATA event, which is
-							triggered for any regular data such as user input or server
-						process output.</p>
+						<p>As the TELNET stream is parsed, events will be generated and sent
+							out of the <code>Telnet</code> event emitter methods. Of particular interest
+							for data receiving is the <code>Telnet.on(&quot;data&quot;, callback)</code> event,
+							which is triggered for any regular data such as user input or
+						server process output.</p>
+						<p>Example:</p>
 					</li>
 				</ul>
+				<pre><code class="language-ts">socket.on(<span class="hljs-string">"data"</span>, <span class="hljs-function">(<span class="hljs-params">buffer</span>) =&gt;</span> {
+  telnet.receive(buffer); <span class="hljs-comment">// pass it to telnet immediately</span>
+});
+telnet.on(<span class="hljs-string">"data"</span>, <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+  <span class="hljs-comment">// This event represents incoming data from the telnet connection.</span>
+  <span class="hljs-comment">// Process your application input in *this* event, not the socket</span>
+  <span class="hljs-comment">// data event.</span>
+});</code></pre>
 				<a href="#iiic-sending-data" id="iiic-sending-data" style="color: inherit; text-decoration: none;">
 					<h4>IIIc. Sending Data</h4>
 				</a>
-				<p>All of the output functions will invoke the TELNET_EV_SEND event.</p>
+				<p>All of the output functions will invoke the
+				<code>telnet.on(&quot;send&quot;, callback);</code> event.</p>
 				<p>Note: it is very important that ALL data sent to the remote end of
-					the connection be passed through libtelnet. All user input or
-					process output that you wish to send over the wire should be given
-					to one of the following functions. Do NOT send or buffer
+					the connection be passed through the <code>Telnet</code> object. All user
+					input or process output that you wish to send over the wire should
+					be given to one of the following functions. Do NOT send or buffer
 				unprocessed output data directly!</p>
 				<ul>
-					<li><p><code>void telnet_iac(telnet_t *telnet, unsigned char cmd);</code></p>
+					<li><p><code>telnet.iac(command: TelnetCommand): void;</code></p>
 						<p>Sends a single &quot;simple&quot; TELNET command, such as the GO-AHEAD
 						commands (255 249).</p>
 					</li>
-					<li><p><code>void telnet_negotiate(telnet_t *telnet, unsigned char cmd, unsigned char opt);</code></p>
+					<li><p><code>telnet.negotiate(cmd: TelnetNegotiationCommand, option: TelnetOption): void;</code></p>
 						<p>Sends a TELNET negotiation command. The cmd parameter must be one
-							of TELNET_WILL, TELNET_WONT, TELNET_DO, or TELNET_DONT. The opt
-						parameter is the option to negotiate.</p>
+							of <code>TelnetCommand.DO</code>, <code>TelnetCommand.DONT</code>, <code>TelnetCommand.WILL</code>,
+							or <code>TelnetCommand.WONT</code>. The option parameter is the option to
+						negotiate.</p>
 						<p>Unless in PROXY mode, the RFC1143 support may delay or ellide the
 							request entirely, as appropriate. It will ignore duplicate
 							invocations, such as asking for WILL NAWS when NAWS is already on
 						or is currently awaiting response from the remote end.</p>
 					</li>
-					<li><p><code>void telnet_send(telnet_t *telnet, const char *buffer, size_t size);</code></p>
+					<li><p><code>telnet.send(buffer: ArrayLike&lt;number&gt;): void</code></p>
 						<p>Sends raw data, which would be either the process output from a
 						server or the user input from a client.</p>
 						<p>For sending regular text it may be more convenient to use
-						telnet_printf().</p>
+						<code>telnet.sendText()</code>.</p>
 					</li>
-					<li><p><code>void telnet_send_text(telnet_t *telnet, const char *buffer, size_t size);</code></p>
+					<li><p><code>telnet.sendText(text: string): void</code></p>
 						<p>Sends text characters with translation of C newlines (\n) into
 							CR LF and C carriage returns (\r) into CR NUL, as required by
-						RFC854, unless transmission in BINARY mode has been negotiated.</p>
-						<p>For sending regular text it may be more convenient to use
-						telnet_printf().</p>
+							RFC854, unless transmission in BINARY mode has been negotiated.
+							Strings will be encoded to ANSII and then writen to web assembly
+						memory with a NULL character terminator.</p>
 					</li>
-					<li><p><code>void telnet_begin_sb(telnet_t *telnet, unsigned char telopt);</code></p>
-						<p>Sends the header for a TELNET sub-negotiation command for the
-							specified option. All send data following this command will be
-							part of the sub-negotiation data until a call is made to
-						telnet_finish_subnegotiation().</p>
-						<p>You should not use telnet_printf() for sending subnegotiation
-							data as it will perform newline translations that usually do not
-						need to be done for subnegotiation data, and may cause problems.</p>
+					<li><p><code>subnegotiation(telopt: TelnetOption, data: ArrayLike&lt;number&gt;): void;</code></p>
+						<p>This method starts a subnegotiation for a telnet option. It encodes
+							the provided data buffer properly for emission to the socket,
+						including the end marker.</p>
 					</li>
 					<li><p><code>void telnet_finish_sb(telnet_t *telnet);</code></p>
 						<p>Sends the end marker for a TELNET sub-negotiation command. This
 							must be called after (and only after) a call has been made to
 							telnet_begin_subnegotiation() and any negotiation data has been
 						sent.</p>
-					</li>
-					<li><p><code>void telnet_subnegotiation(telnet_t *telnet, unsigned char telopt, const char *buffer, unsigned int size);</code></p>
-						<p>Sends a TELNET sub-negotiation command. The telopt parameter is
-						the sub-negotiation option.</p>
-						<p>Note that this function is just a shorthand for:</p>
-						<pre><code> telnet<span class="hljs-constructor">_begin_sb(<span class="hljs-params">telnet</span>, <span class="hljs-params">telopt</span>)</span>;
- telnet<span class="hljs-constructor">_send(<span class="hljs-params">telnet</span>, <span class="hljs-params">buffer</span>, <span class="hljs-params">size</span>)</span>;
- telnet<span class="hljs-constructor">_end_sb(<span class="hljs-params">telnet</span>)</span>;</code></pre><p>For some subnegotiations that involve a lot of complex formatted
-							data to be sent, it may be easier to make calls to both
-							telnet_begin_sb() and telnet_finish_sb() and using telnet_send()
-						or telnet_printf2() to format the data.</p>
 						<p>NOTE: telnet_subnegotiation() does have special behavior in
 							PROXY mode, as in that mode this function will automatically
 						detect the COMPRESS2 marker and enable zlib compression.</p>
-					</li>
-					<li><p><code>int telnet_printf(telnet_t *telnet, const char *fmt, ...);</code></p>
-						<p>This functions very similarly to fprintf, except that output is
-							sent through libtelnet for processing. IAC bytes are properly
-							escaped, C newlines (\n) are translated into CR LF, and C carriage
-							returns (\r) are translated into CR NUL, all as required by
-						RFC854. The return code is the length of the formatted text.</p>
-						<p>NOTE: due to an internal implementation detail, the maximum
-						lenth of the formatted text is 4096 characters.</p>
 					</li>
 				</ul>
 				<a href="#iiid-event-handling" id="iiid-event-handling" style="color: inherit; text-decoration: none;">
 					<h4>IIId. Event Handling</h4>
 				</a>
-				<p>libtelnet relies on an event-handling mechanism for processing the
+				<p>libtelnet-ts relies on an event-handling mechanism for processing the
 					parsed TELNET protocol stream as well as for buffering and sending
 				output data.</p>
-				<p>When you initialize a telnet_t structure with telnet_init() you had
-					to pass in an event handler function. This function must meet the
-				following prototype:</p>
-				<p><code>void (telnet_t *telnet, telnet_event_t *event, void *user_data);</code></p>
-				<p>The event structure is detailed below. The user_data value is the
-				pointer passed to telnet_init().</p>
-				<p>The following is a summary of the most important parts of the
-					telnet_event_t data type. Please see the libtelnet manual pages or
-				HTML document for a complete reference.</p>
+				<p>The event structure is detailed below.</p>
+				<p>All of the telnet events were ported from the following c struct
+					<code>telnet_event_t</code>. The <code>TelnetEvent</code> class is a simple wrapper and
+					parser for these events, and simply create object literals for
+				each event.</p>
 				<pre><code><span class="hljs-class"><span class="hljs-keyword">union</span> <span class="hljs-title">telnet_event_t</span> {</span>
   <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">telnet_event_type_t</span> <span class="hljs-title">type</span>;</span>
 
@@ -367,66 +342,58 @@ Telnet.ready.then(<span class="hljs-function">(<span class="hljs-params">e</span
     size_t size;
     unsigned char telopt;
   } sub;
-};</code></pre><p>The enumeration values of telnet_event_type_t are described in
-					detail below. Whenever the the event handler is invoked, the
-					application must look at the event-&gt;type value and do any necessary
-				processing.</p>
-				<p>The only event that MUST be implemented is TELNET_EV_SEND. Most
+};</code></pre><p>The event values of the <code>Telnet</code> class are described in
+				detail below.</p>
+				<p>The only event that MUST be implemented is <code>&quot;send&quot;</code>. Most
 					applications will also always want to implement the event
-				TELNET_EV_DATA.</p>
+				<code>&quot;data&quot;</code>.</p>
 				<p>Here is an example event handler implementation which includes
 				handlers for several important events.</p>
-				<pre><code><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">my_event_handler</span><span class="hljs-params">(<span class="hljs-keyword">telnet_t</span> *telnet, <span class="hljs-keyword">telnet_event_t</span> *ev,
-    <span class="hljs-keyword">void</span> *user_data)</span> </span>{
-  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">user_info</span> *<span class="hljs-title">user</span> = (<span class="hljs-title">struct</span> <span class="hljs-title">user_info</span> *)<span class="hljs-title">user_data</span>;</span>
-
-  <span class="hljs-keyword">switch</span> (ev-&gt;type) {
-  <span class="hljs-keyword">case</span> TELNET_EV_DATA:
-    process_user_input(user, event-&gt;data.<span class="hljs-built_in">buffer</span>, event-&gt;data.<span class="hljs-built_in">size</span>);
-    <span class="hljs-keyword">break</span>;
-  <span class="hljs-keyword">case</span> TELNET_EV_SEND:
-    write_to_descriptor(user, event-&gt;data.<span class="hljs-built_in">buffer</span>, event-&gt;data.<span class="hljs-built_in">size</span>);
-    <span class="hljs-keyword">break</span>;
-  <span class="hljs-keyword">case</span> TELNET_EV_ERROR:
-    fatal_error(<span class="hljs-string">"TELNET error: %s"</span>, event-&gt;error.msg);
-    <span class="hljs-keyword">break</span>;
-  }
-}</code></pre><ul>
-					<li><p>TELNET_EV_DATA</p>
-						<p>The DATA event is triggered whenever regular data (not part of any
-							special TELNET command) is received. For a client, this will be
-							process output from the server. For a server, this will be input
-						typed by the user.</p>
-						<p>The event-&gt;data.buffer value will contain the bytes received and the
-							event-&gt;data.size value will contain the number of bytes received.
-						Note that event-&gt;data.buffer is not NUL terminated!</p>
+				<pre><code class="language-ts"><span class="hljs-comment">// incoming socket data must be written to telnet immediately</span>
+socket.on(<span class="hljs-string">"data"</span>, <span class="hljs-function">(<span class="hljs-params">data</span>) =&gt;</span> telnet.receive(data));
+<span class="hljs-comment">// handle your application data buffer here</span>
+telnet.on(<span class="hljs-string">"data"</span>, <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+  handleApplicationData(event.buffer);
+});
+<span class="hljs-comment">// whenever data is sent through telnet, write it to the socket</span>
+telnet.on(<span class="hljs-string">"send"</span>, <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> socket.write(data));
+<span class="hljs-comment">// make sure to handle telnet errors here</span>
+telnet.on(<span class="hljs-string">"error"</span>, <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> handleError(event));</code></pre>
+				<ul>
+					<li><p><code>telnet.on(event: &quot;data&quot;, (event: IDataEvent) =&gt; void)</code></p>
+						<p>The <code>&quot;data&quot;</code> event is triggered whenever regular data (not part
+							of any special TELNET command) is received. For a client, this
+							will be process output from the server. For a server, this will
+						be input typed by the user.</p>
+						<p>The <code>event.buffer</code> value will contain the bytes received and the
+						<code>event.size</code> value will contain the number of bytes received.</p>
 						<p>NOTE: there is no guarantee that user input or server output
 							will be received in whole lines. If you wish to process data
 							a line at a time, you are responsible for buffering the data and
 						checking for line terminators yourself!</p>
 					</li>
-					<li><p>TELNET_EV_SEND</p>
-						<p>This event is sent whenever libtelnet has generated data that must
-							be sent over the wire to the remove end. Generally that means
-							calling send() or adding the data to your application&#39;s output
-						buffer.</p>
-						<p>The event-&gt;data.buffer value will contain the bytes to send and the
-							event-&gt;data.size value will contain the number of bytes to send.
-							Note that event-&gt;data.buffer is not NUL terminated, and may include
-						NUL characters in its data, so always use event-&gt;data.size!</p>
+					<li><p><code>telnet.on(event: &quot;send&quot;, listener: (data: IDataEvent) =&gt; void)</code></p>
+						<p>This event is sent whenever libtelnet-t has generated data that
+							must be sent over the wire to the remove end. Generally that
+							means calling <code>socket.write()</code> or adding the data to your
+						application&#39;s output buffer.</p>
+						<p>The <code>event.buffer</code> value will contain the bytes to send and the
+							<code>event.size</code> value will contain the number of bytes to send.
+						Note that <code>event.buffer</code> is not NUL terminated.</p>
 						<p>NOTE: Your SEND event handler must send or buffer the data in
 							its raw form as provided by libtelnet. If you wish to perform
 						any kind of preprocessing on data you want to send to the other</p>
 					</li>
-					<li><p>TELNET_EV_IAC</p>
+					<li><p><code>telnet.on(event: &quot;iac&quot;, listener: (data: IIACEvent) =&gt; void)</code></p>
 						<p>The IAC event is triggered whenever a simple IAC command is
 							received, such as the IAC EOR (end of record, also called go ahead
 						or GA) command.</p>
-						<p>The command received is in the event-&gt;iac.cmd value.</p>
+						<p>The command received is in the event.cmd value.</p>
 						<p>The necessary processing depends on the specific commands; see
 						the TELNET RFC for more information.</p>
 					</li>
-					<li><p>TELNET_EV_WILL / TELNET_EV_DO</p>
+					<li><p><code>telnet.on(event: &quot;negotiate&quot;, listener: (data: INegotiationEvent) =&gt; void);</code></p>
+						<p>For <code>event.type</code> <code>TelnetEvent.WILL</code> or <code>TelnetEvent.DO</code></p>
 						<p>The WILL and DO events are sent when a TELNET negotiation command
 						of the same name is received.</p>
 						<p>WILL events are sent by the remote end when they wish to be
@@ -436,14 +403,15 @@ Telnet.ready.then(<span class="hljs-function">(<span class="hljs-params">e</span
 							turn on an option on your end, or in confirmation after you have
 						sent a WILL command to them.</p>
 						<p>In either case, the TELNET option under negotiation will be in
-						event-&gt;neg.telopt field.</p>
-						<p>libtelnet manages most of the pecularities of negotiation for you.
+						<code>event.telopt</code> field.</p>
+						<p>libtelnet-ts manages most of the pecularities of negotiation for you.
 						For information on libtelnet&#39;s negotiation method, see:</p>
 						<p><a href="http://www.faqs.org/rfcs/rfc1143.html">http://www.faqs.org/rfcs/rfc1143.html</a></p>
-						<p>Note that in PROXY mode libtelnet will do no processing of its
+						<p>Note that in PROXY mode libtelnet-ts will do no processing of its
 						own for you.</p>
 					</li>
-					<li><p>TELNET_EV_WONT / TELNET_EV_DONT</p>
+					<li><p><code>telnet.on(event: &quot;negotiate&quot;, listener: (data: INegotiationEvent) =&gt; void);</code></p>
+						<p>For <code>event.type</code> <code>TelnetEvent.WONT</code> or <code>TelnetEvent.DONT</code></p>
 						<p>The WONT and DONT events are sent when the remote end of the
 							connection wishes to disable an option, when they are refusing to
 							a support an option that you have asked for, or in confirmation of
@@ -455,26 +423,24 @@ Telnet.ready.then(<span class="hljs-function">(<span class="hljs-params">e</span
 						<p>Sometimes WONT or DONT will be sent for TELNET options that are
 							already enabled, but the remote end wishes to stop using. You
 							cannot decline. These events are demands that must be complied
-							with. libtelnet will always send the appropriate response back
+							with. libtelnet-ts will always send the appropriate response back
 							without consulting your application. These events are sent to
 						allow your application to disable its own use of the features.</p>
 						<p>In either case, the TELNET option under negotiation will be in
-						event-&gt;neg.telopt field.</p>
+						event.telopt field.</p>
 						<p>Note that in PROXY mode libtelnet will do no processing of its
 						own for you.</p>
 					</li>
-					<li><p>TELNET_EV_SUBNEGOTIATION</p>
+					<li><p><code>telnet.on(event: &quot;sb&quot;, listener: (data: ISubnegotiationEvent) =&gt; void)</code></p>
 						<p>Triggered whenever a TELNET sub-negotiation has been received.
 							Sub-negotiations include the NAWS option for communicating
 							terminal size to a server, the NEW-ENVIRON and TTYPE options for
 							negotiating terminal features, and MUD-centric protocols such as
 						ZMP, MSSP, and MCCP2.</p>
-						<p>The event-&gt;sub-&gt;telopt value is the option under sub-negotiation.
-							The remaining data (if any) is passed in event-&gt;sub.buffer and
-							event-&gt;sub.size. Note that most subnegotiation commands can include
-							embedded NUL bytes in the subnegotiation data, and the data
-							event-&gt;sub.buffer is not NUL terminated, so always use the
-						event-&gt;sub.size value!</p>
+						<p>The <code>event.telopt</code> value is the option under sub-negotiation.
+							The remaining data (if any) is passed in <code>event.buffer</code> and
+							<code>event.size</code>. Note that most subnegotiation commands can include
+						embedded NUL bytes in the subnegotiation data!</p>
 						<p>The meaning and necessary processing for subnegotiations are
 							defined in various TELNET RFCs and other informal specifications.
 							A subnegotiation should never be sent unless the specific option
@@ -487,77 +453,74 @@ Telnet.ready.then(<span class="hljs-function">(<span class="hljs-params">e</span
 							should be ignored for these options and the special events should
 						be handled explicitly.</p>
 					</li>
-					<li><p>TELNET_EV_COMPRESS</p>
+					<li><p><code>telnet.on(event: &quot;compress&quot;, listener: (data: ICompressEvent) =&gt; void)</code></p>
 						<p>The COMPRESS event notifies the app that COMPRESS2/MCCP2
 							compression has begun or ended. Only servers can send compressed
 						data, and hence only clients will receive compressed data.</p>
-						<p>The event-&gt;command value will be 1 if compression has started and
-						will be 0 if compression has ended.</p>
+						<p>The <code>event.state</code> value will be <code>true</code> if compression has started
+						and will be <code>false</code> if compression has ended.</p>
 					</li>
-					<li><p>TELNET_EV_ZMP</p>
-						<p>The event-&gt;zmp.argc field is the number of ZMP parameters, including
-							the command name, that have been received. The event-&gt;zmp.argv
+					<li><p><code>telnet.on(event: &quot;zmp&quot;, listener: (data: IZMPEvent) =&gt; void)</code></p>
+						<p>The event.argc field is the number of ZMP parameters, including
+							the command name, that have been received. The <code>event.argv</code>
 							field is an array of strings, one for each ZMP parameter. The
-						command name will be in event-&gt;zmp.argv[0].</p>
+						command name will be in <code>event.argv[0]</code>.</p>
 					</li>
-					<li><p>TELNET_EV_TTYPE</p>
-						<p>The event-&gt;ttype.cmd field will be either TELNET_TTYPE_SEND,
-						TELNET_TTYPE_IS, TELNET_TTYPE_INFO.</p>
-						<p>The actual terminal type will be in event-&gt;ttype.name.</p>
+					<li><p><code>telnet.on(event: &quot;ttype&quot;, listener: (data: ITType) =&gt; void)</code></p>
+						<p>The <code>event.cmd</code> field will be either <code>TTypeCommand.IS</code>
+						or <code>TTypeCommand.SEND</code>.</p>
+						<p>The actual terminal type will be in event.name.</p>
 					</li>
-					<li><p>TELNET_EV_ENVIRON</p>
-						<p>The event-&gt;environ.cmd field will be either TELNET_ENVIRON_IS,
-						TELNET_ENVIRON_SEND, or TELNET_ENVIRON_INFO.</p>
+					<li><p><code>telnet.on(event: &quot;environ&quot;, listener: (data: IEnvironEvent) =&gt; void)</code></p>
+						<p>The <code>event.cmd</code> field will be either <code>TelnetEnviron.IS</code>,
+						<code>TelnetEnviron.SEND</code>, or <code>TelnetEnviron.INFO</code>.</p>
 						<p>The actual environment variable sent or requested will be sent
-							in the event-&gt;environ.values field. This is an array of
-						structures with the following format:</p>
-						<pre><code>  struct telnet_environ_t {
-    unsigned char<span class="hljs-built_in"> type;
-</span>    const char *var;
-    const char *value;
-  };</code></pre><p>The number of entries in the event-&gt;environ.values array is
-						stored in event-&gt;environ.count.</p>
-						<p>Note that libtelnet does not support the ESC byte for ENVIRON/
-							NEW-ENVIRON. Data using escaped bytes will not be parsed
-						correctly.</p>
+							in the <code>event.values</code> field. This is an array of <code>IEnvironVar</code>
+						objects with the following format:</p>
+						<pre><code class="language-ts"><span class="hljs-comment">/** An Environ var. */</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> IEnvironVar {
+  readonly <span class="hljs-keyword">type</span>: EnvironVarType;
+  readonly <span class="hljs-keyword">var</span>: <span class="hljs-built_in">string</span> | <span class="hljs-literal">null</span>;
+  readonly value: <span class="hljs-built_in">string</span> | <span class="hljs-literal">null</span>;
+}</code></pre>
+						<p>The number of entries in the event.values array is
+						stored in event.count.</p>
+						<p>Note that libtelnet-ts does not support the ESC byte for
+							ENVIRON/NEW-ENVIRON. Data using escaped bytes will not be
+						parsed correctly.</p>
 					</li>
-					<li><p>TELNET_EV_MSSP</p>
-						<p>The event-&gt;mssp.values field is an array of telnet_environ_t
-							structures. The cmd field in each entry will have an
-							unspecified value, while the var and value fields will always
-							be set to the MSSP variable and value being set. For multi-value
-							MSSP variables, there will be multiple entries in the values
-						array for each value, each with the same variable name set.</p>
-						<p>The number of entries in the event-&gt;mssp.values array is
-						stored in event-&gt;mssp.count.</p>
+					<li><p><code>telnet.on(event: &quot;mssp&quot;, listener: (data: IMSSPEvent) =&gt; void)</code></p>
+						<p>The <code>event.values</code> field is an array of <code>IEnvironVar</code>
+							objects. The cmd field in each entry will have an
+							unspecified value, while the <code>var</code> and <code>value</code> fields will
+							always be set to the MSSP variable and value being set. For
+							multi-value MSSP variables, there will be multiple entries
+							in the values array for each value, each with the same variable
+						name set.</p>
+						<p>The number of entries in the event.values array is
+						stored in event.count.</p>
 					</li>
-					<li><p>TELNET_EV_WARNING</p>
-						<p>The WARNING event is sent whenever something has gone wrong inside
-							of libtelnet (possibly due to malformed data sent by the other
-							end) but which recovery is (likely) possible. It may be safe to
-							continue using the connection, but some data may have been lost or
-						incorrectly interpreted.</p>
-						<p>The event-&gt;error.msg field will contain a NUL terminated string
+					<li><p><code>telneton(event: &quot;error&quot;, listener: (data: IErrorEvent) =&gt; void)</code>
+						TELNET_EV_WARNING and</p>
+						<p>The <code>TelnetEventType.WARNING</code> event is sent whenever something
+							has gone wrong inside of libtelnet (possibly due to malformed
+							data sent by the other end) but which recovery is (likely) possible.
+							It may be safe to continue using the connection, but some data may
+						have been lost or incorrectly interpreted.</p>
+						<p>The <code>event.msg</code> field will contain a NUL terminated string
 						explaining the error.</p>
-					</li>
-					<li><p>TELNET_EV_ERROR</p>
-						<p>Similar to the WARNING event, the ERROR event is sent whenever
-							something has gone wrong. ERROR events are non-recoverable,
-							however, and the application should immediately close the
-							connection. Whatever has happened is likely going only to result
-							in garbage from libtelnet. This is most likely to happen when a
-						COMPRESS2 stream fails, but other problems can occur.</p>
-						<p>The event-&gt;error.msg field will contain a NUL terminated string
+						<p>Similar to the WARNING event, the <code>TelnetEventType.ERROR</code> event
+							is sent whenever something has gone wrong. ERROR events are
+							non-recoverable, however, and the application should immediately
+							close the connection. Whatever has happened is likely going only
+							to result in garbage from libtelnet. This is most likely to happen
+						when a COMPRESS2 stream fails, but other problems can occur.</p>
+						<p>The event.msg field will contain a NUL terminated string
 						explaining the error.</p>
 					</li>
 				</ul>
-				<a href="#iv-integrating-libtelnet-with-common-muds" id="iv-integrating-libtelnet-with-common-muds" style="color: inherit; text-decoration: none;">
-					<h2>IV. Integrating libtelnet with common muds</h2>
-				</a>
-				<p>FIXME: fill in some notes about how to splice in libtelnet with
-				common Diku/Merc/Circle/etc. MUD codebases.</p>
-				<a href="#v-safety-and-correctness-considerations" id="v-safety-and-correctness-considerations" style="color: inherit; text-decoration: none;">
-					<h2>V. Safety and correctness considerations</h2>
+				<a href="#iv-safety-and-correctness-considerations" id="iv-safety-and-correctness-considerations" style="color: inherit; text-decoration: none;">
+					<h2>IV. Safety and correctness considerations</h2>
 				</a>
 				<p>Your existing application may make heavy use of its own output
 					buffering and transmission commands, including hand-made routines for
@@ -578,9 +541,11 @@ Telnet.ready.then(<span class="hljs-function">(<span class="hljs-params">e</span
 				following: telnet_iac, telnet_negotiate, or telnet_subnegotiation().</p>
 				<p>If you are attempting to enable COMPRESS2/MCCP2, you must use the
 				telnet_begin_compress2() function.</p>
-				<a href="#vi-mccp2-compression" id="vi-mccp2-compression" style="color: inherit; text-decoration: none;">
-					<h2>VI. MCCP2 compression</h2>
+				<a href="#v-mccp2-compression" id="v-mccp2-compression" style="color: inherit; text-decoration: none;">
+					<h2>V. MCCP2 compression</h2>
 				</a>
+				<p>This feature is not enabled for libtelnet-ts yet, but the following
+				docs and methods will be enabled soon.</p>
 				<p>The MCCP2 (COMPRESS2) TELNET extension allows for the compression of
 				all traffic sent from server to client. For more information:</p>
 				<p><a href="http://www.mudbytes.net/index.php?a=articles&amp;s=mccp">http://www.mudbytes.net/index.php?a=articles&amp;s=mccp</a></p>
@@ -591,16 +556,18 @@ Telnet.ready.then(<span class="hljs-function">(<span class="hljs-params">e</span
 				<p>libtelnet transparently supports MCCP2. For a server to support
 					MCCP2, the application must begin negotiation of the COMPRESS2 option
 				using telnet_negotiate(), for example:</p>
-				<p><code>telnet_negotiate(&amp;telnet, TELNET_WILL, TELNET_OPTION_COMPRESS2, user_data);</code></p>
+				<p><code>telnet.negotiate(TelnetCommand.WILL, TelnetOption.COMPRESS2);</code></p>
 				<p>If a favorable DO COMPRESS2 is sent back from the client then the
 					server application can begin compression at any time by calling
-				telnet_begin_compress2().</p>
+				`telnet.beginCompress2().</p>
 				<p>If a connection is in PROXY mode and COMPRESS2 support is enabled
 					then libtelnet will automatically detect the start of a COMPRESS2
 				stream, in either the sending or receiving direction.</p>
-				<a href="#vii-zenith-mud-protocol-zmp-support" id="vii-zenith-mud-protocol-zmp-support" style="color: inherit; text-decoration: none;">
-					<h2>VII. Zenith MUD Protocol (ZMP) support</h2>
+				<a href="#vi-zenith-mud-protocol-zmp-support" id="vi-zenith-mud-protocol-zmp-support" style="color: inherit; text-decoration: none;">
+					<h2>VI. Zenith MUD Protocol (ZMP) support</h2>
 				</a>
+				<p>This feature is not enabled for libtelnet-ts yet, but the following
+				docs and methods will be enabled soon.</p>
 				<p>The Zenith MUD Protocol allows applications to send messages across
 					the TELNET connection outside of the normal user input/output data
 					stream. libtelnet offers some limited support for receiving and
@@ -608,10 +575,10 @@ Telnet.ready.then(<span class="hljs-function">(<span class="hljs-params">e</span
 				For more information on ZMP:</p>
 				<p><a href="http://zmp.sourcemud.org/">http://zmp.sourcemud.org/</a></p>
 				<p>For a server to enable ZMP, it must send the WILL ZMP negotitaion:</p>
-				<p><code>telnet_negotiate(&amp;telnet, TELNET_WILL, TELNET_TELOPT_ZMP);</code></p>
+				<p><code>telnet.negotiate(TelnetCommand.WILL, TelnetOption.ZMP);</code></p>
 				<p>For a client to support ZMP it must include ZMP in the telopt table
-				passed to telnet_init(), with the him field set to TELNET_DO:</p>
-				<p><code>{ TELNET_TELOPT_ZMP, TELNET_WONT, TELNET_DO },</code></p>
+				as follows:</p>
+				<pre><code class="language-ts">table.support(TelnetOption.ZMP, <span class="hljs-literal">false</span>, <span class="hljs-literal">true</span>);</code></pre>
 				<p>Note that while ZMP is a bi-directional protocol, it is only ever
 					enabled on the server end of the connection. This automatically
 					enables the client to send ZMP commands. The client must never
@@ -619,14 +586,13 @@ Telnet.ready.then(<span class="hljs-function">(<span class="hljs-params">e</span
 				<p>Once ZMP is enabled, any ZMP commands received will automatically be
 					sent to the event handler function with the TELNET_EV_SUBNEGOTIATION
 					event code. The command will automatically be parsed and the ZMP
-					parameters will be placed in the event-&gt;argv array and the number of
-				parameters will be placed in the event-&gt;argc field.</p>
+					parameters will be placed in the <code>event.argv</code> array and the number of
+				parameters will be placed in the <code>event.argc</code> field.</p>
 				<p>NOTE: if an error occured while parsing the ZMP command because it
 					was malformed, the event-&gt;argc field will be equal to 0 and the
 					event-&gt;argv field will be NULL. You should always check for this
 				before attempting to access the parameter array.</p>
-				<p>To send ZMP commands to the remote end, use either telnet_send_zmp()
-				or telnet_send_zmpv().</p>
+				<p>To send ZMP commands to the remote end, use <code>telnet.sendzmp()</code>.</p>
 				<ul>
 					<li><p><code>int telnet_send_zmp(telnet_t *telnet, size_t argv, const char **argv);</code></p>
 						<p>Sends a ZMP command to the remote end. The argc parameter is the
@@ -637,8 +603,8 @@ Telnet.ready.then(<span class="hljs-function">(<span class="hljs-params">e</span
 						argc.</p>
 					</li>
 				</ul>
-				<a href="#viii-mud-server-status-protocol-mssp-support" id="viii-mud-server-status-protocol-mssp-support" style="color: inherit; text-decoration: none;">
-					<h2>VIII. MUD Server Status Protocol (MSSP) support</h2>
+				<a href="#vii-mud-server-status-protocol-mssp-support" id="vii-mud-server-status-protocol-mssp-support" style="color: inherit; text-decoration: none;">
+					<h2>VII. MUD Server Status Protocol (MSSP) support</h2>
 				</a>
 				<p>MSSP allows for crawlers or other clients to query a MUD server&#39;s
 					supported feature list. This allows MUD listing states to
@@ -646,27 +612,6 @@ Telnet.ready.then(<span class="hljs-function">(<span class="hljs-params">e</span
 					require MUD administrators to manually update listing sites for
 				their MUD. For more information on MSSP:</p>
 				<p><a href="http://tintin.sourceforge.net/mssp/">http://tintin.sourceforge.net/mssp/</a></p>
-				<a href="#ix-telnet-proxy-utility" id="ix-telnet-proxy-utility" style="color: inherit; text-decoration: none;">
-					<h2>IX. Telnet proxy utility</h2>
-				</a>
-				<p>The telnet-proxy utility is a small application that serves both as a
-					testbed for libtelnet and as a powerful debugging tool for TELNET
-				servers and clients.</p>
-				<p>To use telnet-proxy, you must first compile it using:</p>
-				<pre><code> <span class="hljs-variable">$ </span>make</code></pre><p>If you do not have zlib installed and wish to disable MCCP2 support
-					then you must first edit the Makefile and remove the -DHAVE_ZLIB and
-				the -lz from the compile flags.</p>
-				<p>To run telnet-proxy, you simply give it the server&#39;s host name or IP
-					address, the server&#39;s port number, and the port number that
-					telnet-proxy should listen on. For example, to connect to the server
-				on mud.example.com port 7800 and to listen on port 5000, run:</p>
-				<pre><code> $ ./telnet-proxy mud.example.com <span class="hljs-number">7800</span> <span class="hljs-number">5000</span></code></pre><p>You can then connect to the host telnet-proxy is running on (e.g.
-					127.0.0.1) on port 5000 and you will automatically be proxied into
-				mud.example.com.</p>
-				<p>telnet-proxy will display status information about the data passing
-					through both ends of the tunnel. telnet-proxy can only support a
-					single tunnel at a time. It will continue running until an error
-				occurs or a terminating signal is sent to the proxy process.</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
