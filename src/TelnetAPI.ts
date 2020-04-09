@@ -36,4 +36,6 @@ export interface TelnetAPI {
     str: string,
     notNullTerminated: boolean,
   ): void;
+  _telnet_begin_compress2(telnet: number): void;
+  _telnet_send_zmp(telnet: number, argc: number, argv: number): void;
 }

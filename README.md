@@ -551,12 +551,12 @@ of libtelnet always make use of the libtelnet output functions for
 all data being sent over the TELNET connection.
 
 In particular, if you are writing a client, all user input must be
-passed through to telnet_send(). This also includes any input
+passed through to `telnet.send()`. This also includes any input
 generated automatically by scripts, triggers, or macros.
 
 For a server, any and all output -- including ANSI/VT100 escape
 codes, regular text, newlines, and so on -- must be passed through to
-telnet_send().
+`telnet.send().
 
 Any TELNET commands that are to be sent must be given to one of the
 following: telnet_iac, telnet_negotiate, or telnet_subnegotiation().
@@ -566,26 +566,18 @@ telnet_begin_compress2() function.
 
 ## V. MCCP2 compression
 
-This feature is not enabled for libtelnet-ts yet, but the following
-docs and methods will be enabled soon.
-
 The MCCP2 (COMPRESS2) TELNET extension allows for the compression of
 all traffic sent from server to client. For more information:
 
 http://www.mudbytes.net/index.php?a=articles&s=mccp
 
-In order for libtelnet to support MCCP2, zlib must be installed and
-enabled when compiling libtelnet. Use -DHAVE_ZLIB to enable zlib
-when compiling libtelnet.c and pass -lz to the linker to link in the
-zlib shared library.
-
-libtelnet transparently supports MCCP2. For a server to support
+`libtelnet-ts` transparently supports MCCP2. For a server to support
 MCCP2, the application must begin negotiation of the COMPRESS2 option
 using telnet_negotiate(), for example:
 
 `telnet.negotiate(TelnetCommand.WILL, TelnetOption.COMPRESS2);`
 
-If a favorable DO COMPRESS2 is sent back from the client then the
+If a favorable `DO COMPRESS2` is sent back from the client then the
 server application can begin compression at any time by calling
 `telnet.beginCompress2().
 
@@ -629,20 +621,17 @@ parameters will be placed in the `event.argv` array and the number of
 parameters will be placed in the `event.argc` field.
 
 NOTE: if an error occured while parsing the ZMP command because it
-was malformed, the event->argc field will be equal to 0 and the
-event->argv field will be NULL. You should always check for this
+was malformed, the `event.argc` field will be equal to 0 and the
+`event.argv` field will be `null`. You should always check for this
 before attempting to access the parameter array.
 
 To send ZMP commands to the remote end, use `telnet.sendzmp()`.
 
-- `int telnet_send_zmp(telnet_t *telnet, size_t argv, const char **argv);`
+- `telnet.zmp(command: string, argv: string[]): void;`
 
-  Sends a ZMP command to the remote end. The argc parameter is the
-  number of ZMP parameters (including the command name!) to be sent.
-  The argv parameter is an array of strings containing the
-  parameters. The element in argv[0] is the command name itself.
-  The argv array must have at least as many elements as the value
-  argc.
+  Sends a ZMP command to the remote end. The command parameter
+  is required, but the argv parameter is optional. The argv array
+  contains the parameters.
 
 ## VII. MUD Server Status Protocol (MSSP) support
 
