@@ -2,9 +2,9 @@ import { TelnetOption } from "./consts";
 /** This class represents a table of supported telnet options. */
 export declare class CompatibilityTable {
     pointer: number;
+    protected table: Uint8Array;
     /** Shorthand for new CompatibilityTableGenerator() */
     static create(): CompatibilityTable;
-    private table;
     /** Add a supported option, and wether it's supported locally and/or remotely. */
     support(option: TelnetOption, local: boolean, remote: boolean): this;
     /** Finally generate the table. This will commit the table to memory and can be reused. */
