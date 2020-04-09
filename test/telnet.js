@@ -18,7 +18,7 @@ const diff = require("diff");
 function bytesToString(bytes) {
   return Array.from(bytes)
     .map((e) =>
-      e >= 33 && e <= 126
+      (e >= 33 && e <= 126) || e == 0x20
         ? String.fromCharCode(e)
         : `%${e.toString(16).toUpperCase().padStart(2, "0")}`,
     )
