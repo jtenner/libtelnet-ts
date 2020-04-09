@@ -24,6 +24,8 @@ import { CompatibilityTable } from "./CompatibilityTable";
 
 const telnet = require("../build/libtelnet") as TelnetAPI;
 
+const freeIt = (pointer: number) => telnet._free(pointer);
+
 /**
  * A state machine that implements the telnet specification and calls out into
  * web assembly to encode and decode messages from a socket.
@@ -243,9 +245,38 @@ export class Telnet extends EventEmitter {
     telnet._free(pointer);
   }
 
+  /** Begin COMPRESS2. */
+  beginCompress2(): void {
+    telnet._telnet_begin_compress2(this.pointer);
+  }
+
+  /** Send a ZMP command, and a list of optional arguments. */
+  zmp(command: string, args: string[] = []): void {
+    const heap = new DataView(telnet.HEAPU8.buffer);
+    const count = 1 + args.length;
+    const argvPointer = telnet._malloc(count << 2);
+
+    let strPtr = telnet._malloc(command.length + 1);
+    telnet.writeAsciiToMemory(strPtr, command, false);
+    heap.setUint32(argvPointer, strPtr, true);
+
+    const toFree = [argvPointer, strPtr];
+
+    for (let i = 0; i < args.length; i++) {
+      const str = args[i];
+      strPtr = telnet._malloc(str.length + 1);
+      telnet.writeAsciiToMemory(strPtr, str, false);
+      heap.setUint32(argvPointer + ((i + 1) << 2), strPtr, true);
+      toFree.push(strPtr);
+    }
+
+    telnet._telnet_send_zmp(this.pointer, count, argvPointer);
+    toFree.forEach(freeIt);
+  }
+
   /** Call this method when the connection is disposed or you will have memory leaks. */
   dispose(): void {
-    this._toFree.forEach((ptr) => telnet._free(ptr));
+    this._toFree.forEach(freeIt);
     telnet._telnet_free(this.pointer);
     Telnet.map.delete(this.pointer);
   }
