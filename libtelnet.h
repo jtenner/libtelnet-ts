@@ -69,8 +69,8 @@ typedef struct telnet_t telnet_t;
 /*! Telnet event object type. */
 typedef union telnet_event_t telnet_event_t;
 
-/*! Telnet option table element type. */
-typedef struct telnet_telopt_t telnet_telopt_t;
+#define TELNET_SUPPORT_LOCAL (1 << 1)
+#define TELNET_SUPPORT_REMOTE (1 << 0)
 
 /*! \name Telnet commands */
 /*@{*/
@@ -355,15 +355,6 @@ typedef void (*telnet_event_handler_t)(telnet_t *telnet,
 		telnet_event_t *event, void *user_data);
 
 /*! 
- * telopt support table element; use telopt of -1 for end marker 
- */
-struct telnet_telopt_t {
-	short telopt;      /*!< one of the TELOPT codes or -1 */
-	unsigned char us;  /*!< TELNET_WILL or TELNET_WONT */
-	unsigned char him; /*!< TELNET_DO or TELNET_DONT */
-};
-
-/*! 
  * state tracker -- private data structure 
  */
 struct telnet_t;
@@ -389,7 +380,7 @@ extern void trace_func(const char *message, int one, int two);
  * \param flags     0 or TELNET_FLAG_PROXY.
  * \return Telnet state tracker object.
  */
-extern telnet_t* telnet_init(const telnet_telopt_t *telopts,  unsigned char flags);
+extern telnet_t* telnet_init(const unsigned char* telopts,  unsigned char flags);
 
 /*!
  * \brief Call out into javascript with the event.
