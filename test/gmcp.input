@@ -1,0 +1,9 @@
+# test GMCP
+
+# do GMCP
+%FF%FD%C9
+
+# send GMCP subnegotiation
+%FF%FA%C9
+Core.Hello {}
+%FF%F0
