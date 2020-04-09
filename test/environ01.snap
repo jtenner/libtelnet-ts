@@ -1,6 +1,6 @@
-Subnegotiation: ENVIRON 1,0,70,79,79,3,66,65,82
+Subnegotiation: ENVIRON %01%00FOO%03BAR
 Environ: SEND
   VAR: "FOO"
   USERVAR: "BAR"
-Subnegotiation: ENVIRON 1
+Subnegotiation: ENVIRON %01
 Environ: SEND

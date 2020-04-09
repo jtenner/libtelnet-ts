@@ -109,7 +109,7 @@ Telnet.ready.then(() => {
     );
     telnet.on("sb", (event) =>
       writable.write(
-        `Subnegotiation: ${TelnetOption[event.telopt]} ${Array.from(
+        `Subnegotiation: ${TelnetOption[event.telopt]} ${bytesToString(
           event.buffer,
         )}\n`,
       ),
