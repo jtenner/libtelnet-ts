@@ -95,7 +95,11 @@ Telnet.ready.then(() => {
     telnet.on("mssp", (event) => {
       writable.write("MSSP:\n");
       event.values.forEach((env) => {
-        writable.write(`  Var: ${env.var} | Value: ${env.value}\n`);
+        writable.write(
+          `  ${EnvironVarType[env.type]}: "${env.var}"${
+            env.value ? ` = "${env.value}"` : ``
+          }\n`,
+        );
       });
     });
     telnet.on("negotiate", (event) =>
@@ -135,20 +139,20 @@ Telnet.ready.then(() => {
     } else {
       const snapfileContents = fs.readFileSync(snapfile, "utf8");
       if (snapfileContents !== writable.value) {
-        process.stdout.write("\n");
         const changes = diff.diffLines(snapfileContents, writable.value);
 
         for (let i = 0; i < changes.length; i++) {
           const change = changes[i];
-          if (change.added) {
-            process.stdout.write(`+ ${change.value}`);
-          } else if (change.removed) {
-            process.stdout.write(`- ${change.value}`);
-          } else {
-            process.stdout.write(`  ${change.value}`);
-          }
+          const lineStart = change.added
+            ? "\n+ "
+            : change.removed
+            ? "\n- "
+            : "\n  ";
+          process.stdout.write(
+            `${lineStart}${change.value.split("\n").join(lineStart)}`,
+          );
         }
-
+        process.stdout.write("\n");
         process.exit(1);
       } else {
         process.stdout.write(`[Success]\n\n`);
