@@ -249,17 +249,6 @@ unprocessed output data directly!
   the provided data buffer properly for emission to the socket,
   including the end marker.
 
-- `void telnet_finish_sb(telnet_t *telnet);`
-
-  Sends the end marker for a TELNET sub-negotiation command. This
-  must be called after (and only after) a call has been made to
-  telnet_begin_subnegotiation() and any negotiation data has been
-  sent.
-
-  NOTE: telnet_subnegotiation() does have special behavior in
-  PROXY mode, as in that mode this function will automatically
-  detect the COMPRESS2 marker and enable zlib compression.
-
 #### IIId. Event Handling
 
 libtelnet-ts relies on an event-handling mechanism for processing the
@@ -516,7 +505,6 @@ telnet.on("error", (event) => handleError(event));
   stored in event.count.
 
 - `telneton(event: "error", listener: (data: IErrorEvent) => void)`
-  TELNET_EV_WARNING and
 
   The `TelnetEventType.WARNING` event is sent whenever something
   has gone wrong inside of libtelnet (possibly due to malformed
@@ -574,7 +562,7 @@ http://www.mudbytes.net/index.php?a=articles&s=mccp
 
 `libtelnet-ts` transparently supports MCCP2. For a server to support
 MCCP2, the application must begin negotiation of the COMPRESS2 option
-using telnet_negotiate(), for example:
+using `telnet.negotiate()` for example:
 
 `telnet.negotiate(TelnetCommand.WILL, TelnetOption.COMPRESS2);`
 
@@ -613,10 +601,10 @@ table.support(TelnetOption.ZMP, false, true);
 Note that while ZMP is a bi-directional protocol, it is only ever
 enabled on the server end of the connection. This automatically
 enables the client to send ZMP commands. The client must never
-attempt to negotiate ZMP directly using telnet_negotiate().
+attempt to negotiate ZMP directly using `telnet.negotiate()`.
 
 Once ZMP is enabled, any ZMP commands received will automatically be
-sent to the event handler function with the TELNET_EV_SUBNEGOTIATION
+sent to the event handler function with the `TelnetCommand.Subnegotiation`
 event code. The command will automatically be parsed and the ZMP
 parameters will be placed in the `event.argv` array and the number of
 parameters will be placed in the `event.argc` field.
