@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>libtelnet-ts</title>
-	<meta name="description" content="">
+	<meta name="description" content="Documentation for libtelnet-ts">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
 </head>
@@ -13,7 +13,7 @@
 	<div class="tsd-page-toolbar">
 		<div class="container">
 			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
 					<div class="field">
 						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
 						<input id="tsd-search-field" type="text" />
@@ -287,15 +287,6 @@ telnet.on(<span class="hljs-string">"data"</span>, <span class="hljs-function">(
 							the provided data buffer properly for emission to the socket,
 						including the end marker.</p>
 					</li>
-					<li><p><code>void telnet_finish_sb(telnet_t *telnet);</code></p>
-						<p>Sends the end marker for a TELNET sub-negotiation command. This
-							must be called after (and only after) a call has been made to
-							telnet_begin_subnegotiation() and any negotiation data has been
-						sent.</p>
-						<p>NOTE: telnet_subnegotiation() does have special behavior in
-							PROXY mode, as in that mode this function will automatically
-						detect the COMPRESS2 marker and enable zlib compression.</p>
-					</li>
 				</ul>
 				<a href="#iiid-event-handling" id="iiid-event-handling" style="color: inherit; text-decoration: none;">
 					<h4>IIId. Event Handling</h4>
@@ -500,8 +491,7 @@ telnet.on(<span class="hljs-string">"error"</span>, <span class="hljs-function">
 						<p>The number of entries in the event.values array is
 						stored in event.count.</p>
 					</li>
-					<li><p><code>telneton(event: &quot;error&quot;, listener: (data: IErrorEvent) =&gt; void)</code>
-						TELNET_EV_WARNING and</p>
+					<li><p><code>telneton(event: &quot;error&quot;, listener: (data: IErrorEvent) =&gt; void)</code></p>
 						<p>The <code>TelnetEventType.WARNING</code> event is sent whenever something
 							has gone wrong inside of libtelnet (possibly due to malformed
 							data sent by the other end) but which recovery is (likely) possible.
@@ -550,7 +540,7 @@ telnet.on(<span class="hljs-string">"error"</span>, <span class="hljs-function">
 				<p><a href="http://www.mudbytes.net/index.php?a=articles&amp;s=mccp">http://www.mudbytes.net/index.php?a=articles&amp;s=mccp</a></p>
 				<p><code>libtelnet-ts</code> transparently supports MCCP2. For a server to support
 					MCCP2, the application must begin negotiation of the COMPRESS2 option
-				using telnet_negotiate(), for example:</p>
+				using <code>telnet.negotiate()</code> for example:</p>
 				<p><code>telnet.negotiate(TelnetCommand.WILL, TelnetOption.COMPRESS2);</code></p>
 				<p>If a favorable <code>DO COMPRESS2</code> is sent back from the client then the
 					server application can begin compression at any time by calling
@@ -577,9 +567,9 @@ telnet.on(<span class="hljs-string">"error"</span>, <span class="hljs-function">
 				<p>Note that while ZMP is a bi-directional protocol, it is only ever
 					enabled on the server end of the connection. This automatically
 					enables the client to send ZMP commands. The client must never
-				attempt to negotiate ZMP directly using telnet_negotiate().</p>
+				attempt to negotiate ZMP directly using <code>telnet.negotiate()</code>.</p>
 				<p>Once ZMP is enabled, any ZMP commands received will automatically be
-					sent to the event handler function with the TELNET_EV_SUBNEGOTIATION
+					sent to the event handler function with the <code>TelnetCommand.Subnegotiation</code>
 					event code. The command will automatically be parsed and the ZMP
 					parameters will be placed in the <code>event.argv</code> array and the number of
 				parameters will be placed in the <code>event.argc</code> field.</p>
