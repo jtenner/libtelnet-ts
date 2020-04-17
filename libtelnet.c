@@ -67,38 +67,7 @@ EM_JS(void, _init, (
 	int telnet_environ_t_value_offset,
 	int mssp_t_values_offset,
 	int mssp_t_size_offset
-), {
-	const a = require("../lib/consts").consts;
-	a.data_t_buffer_offset = data_t_buffer_offset;
-	a.data_t_size_offset = data_t_size_offset;
-	a.error_t_file_offset = error_t_file_offset;
-	a.error_t_func_offset = error_t_func_offset;
-	a.error_t_msg_offset = error_t_msg_offset;
-	a.error_t_line_offset = error_t_line_offset;
-	a.error_t_errcode_offset = error_t_errcode_offset;
-	a.iac_t_cmd_offset = iac_t_cmd_offset;
-	a.negotiate_t_telopt_offset = negotiate_t_telopt_offset;
-	a.subnegotiate_t_buffer_offset = subnegotiate_t_buffer_offset;
-  a.subnegotiate_t_size_offset = subnegotiate_t_size_offset;
-  a.subnegotiate_t_telopt_offset = subnegotiate_t_telopt_offset;
-	a.zmp_t_argc_offset = zmp_t_argc_offset;
-	a.zmp_t_argv_offset = zmp_t_argv_offset;
-	a.ttype_t_cmd_offset = ttype_t_cmd_offset;
-	a.ttype_t_name_offset = ttype_t_name_offset;
-	a.compress_t_state_offset = compress_t_state_offset;
-	a.environ_t_values_offset = environ_t_values_offset;
-  a.environ_t_size_offset = environ_t_size_offset;
-  a.environ_t_cmd_offset = environ_t_cmd_offset;
-	a.telnet_environ_t_type_offset = telnet_environ_t_type_offset;
-	a.telnet_environ_t_var_offset = telnet_environ_t_var_offset;
-	a.telnet_environ_t_value_offset = telnet_environ_t_value_offset;
-	a.mssp_t_values_offset = mssp_t_values_offset;
-  a.mssp_t_size_offset = mssp_t_size_offset;
-});
-
-EM_JS(void, trace_func, (const char *message, int one, int two), {
-  console.log(AsciiToString(message), one, two);
-});
+), {});
 
 void init() {
 	_init(

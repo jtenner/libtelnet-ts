@@ -21,10 +21,16 @@ import {
 } from "./consts";
 import { TelnetAPI } from "./TelnetAPI";
 import { CompatibilityTable } from "./CompatibilityTable";
+import { getHeapU8, writeAsciiToMemory, getDataView } from "./util";
+import { runtime } from "./bootstrap";
 
-const telnet = require("../build/libtelnet") as TelnetAPI;
+let telnet: TelnetAPI;
 
-const freeIt = (pointer: number) => telnet._free(pointer);
+const ready = runtime.then((e) => {
+  telnet = e.instance.exports as any;
+});
+
+const freeIt = (pointer: number) => telnet.free(pointer);
 
 /**
  * A state machine that implements the telnet specification and calls out into
@@ -35,12 +41,7 @@ export class Telnet extends EventEmitter {
    * When the runtime is finally initialized, this promise will resolve,
    * and telnet objects can finally be instantiated.
    */
-  public static ready = new Promise((resolve) => {
-    telnet.onRuntimeInitialized = function () {
-      telnet._init();
-      resolve();
-    };
-  });
+  public static ready = ready;
 
   /** A map of pointers to their respective Telnet objects for event routing. */
   private static map = new Map<number, Telnet>();
@@ -164,7 +165,7 @@ export class Telnet extends EventEmitter {
     super();
 
     // finally pass the array pointer into the telnet_init function
-    this.pointer = telnet._telnet_init(compatibilityTable.pointer, flags); // user data is null
+    this.pointer = telnet.telnet_init(compatibilityTable.pointer, flags); // user data is null
 
     // hook up event listener
     Telnet.map.set(this.pointer, this);
@@ -178,12 +179,13 @@ export class Telnet extends EventEmitter {
    */
   receive(bytes: ArrayLike<number>): void {
     const bufferLength = bytes.length;
-    const bufferPointer = telnet._malloc(bufferLength + 1);
+    const bufferPointer = telnet.malloc(bufferLength + 1);
     if (bufferPointer === 0) throw new Error("Out of memory.");
-    telnet.HEAPU8.set(bytes, bufferPointer);
-    telnet.HEAPU8[bufferPointer + bufferLength] = 0;
-    telnet._telnet_recv(this.pointer, bufferPointer, bufferLength);
-    telnet._free(bufferPointer);
+    const HEAPU8 = getHeapU8(telnet);
+    HEAPU8.set(bytes, bufferPointer);
+    HEAPU8[bufferPointer + bufferLength] = 0;
+    telnet.telnet_recv(this.pointer, bufferPointer, bufferLength);
+    telnet.free(bufferPointer);
   }
 
   /**
@@ -193,7 +195,7 @@ export class Telnet extends EventEmitter {
    * @param {TelnetCommand} cmd - The TelnetCommand to be sent.
    */
   iac(cmd: TelnetCommand): void {
-    telnet._telnet_iac(this.pointer, cmd);
+    telnet.telnet_iac(this.pointer, cmd);
   }
 
   /**
@@ -203,7 +205,7 @@ export class Telnet extends EventEmitter {
    * @param {TelnetOption} option - The telnet option.
    */
   negotiate(cmd: TelnetNegotiationCommand, option: TelnetOption): void {
-    telnet._telnet_negotiate(this.pointer, cmd, option);
+    telnet.telnet_negotiate(this.pointer, cmd, option);
   }
 
   /**
@@ -213,9 +215,9 @@ export class Telnet extends EventEmitter {
    */
   send(buffer: ArrayLike<number>): void {
     const length = buffer.length;
-    const ptr = telnet._malloc(length);
-    telnet.HEAPU8.set(buffer, ptr);
-    telnet._telnet_send(this.pointer, ptr, length);
+    const ptr = telnet.malloc(length);
+    getHeapU8(telnet).set(buffer, ptr);
+    telnet.telnet_send(this.pointer, ptr, length);
   }
 
   /**
@@ -224,11 +226,9 @@ export class Telnet extends EventEmitter {
    * @param {string} str - The string to be sent.
    */
   sendText(str: string): void {
-    let length = str.length + 1; // add 1 for null termination
-    let ptr = telnet._malloc(length);
-    telnet.writeAsciiToMemory(ptr, str, false);
-    telnet._telnet_send_text(this.pointer, ptr, length - 1);
-    telnet._free(ptr);
+    const ptr = writeAsciiToMemory(telnet, str);
+    telnet.telnet_send_text(this.pointer, ptr, length - 1);
+    telnet.free(ptr);
   }
 
   /**
@@ -239,45 +239,42 @@ export class Telnet extends EventEmitter {
    */
   subnegotiation(telopt: TelnetOption, data: ArrayLike<number>): void {
     const length = data.length;
-    const pointer = telnet._malloc(length);
-    telnet.HEAPU8.set(data, pointer);
-    telnet._telnet_subnegotiation(this.pointer, telopt, pointer, length);
-    telnet._free(pointer);
+    const pointer = telnet.malloc(length);
+    getHeapU8(telnet).set(data, pointer);
+    telnet.telnet_subnegotiation(this.pointer, telopt, pointer, length);
+    telnet.free(pointer);
   }
 
   /** Begin COMPRESS2. */
   beginCompress2(): void {
-    telnet._telnet_begin_compress2(this.pointer);
+    telnet.telnet_begin_compress2(this.pointer);
   }
 
   /** Send a ZMP command, and a list of optional arguments. */
   zmp(command: string, args: string[] = []): void {
-    const heap = new DataView(telnet.HEAPU8.buffer);
+    const heap = getDataView(telnet);
     const count = 1 + args.length;
-    const argvPointer = telnet._malloc(count << 2);
-
-    let strPtr = telnet._malloc(command.length + 1);
-    telnet.writeAsciiToMemory(strPtr, command, false);
+    const argvPointer = telnet.malloc(count << 2);
+    let strPtr = writeAsciiToMemory(telnet, command);
     heap.setUint32(argvPointer, strPtr, true);
 
     const toFree = [argvPointer, strPtr];
 
     for (let i = 0; i < args.length; i++) {
       const str = args[i];
-      strPtr = telnet._malloc(str.length + 1);
-      telnet.writeAsciiToMemory(strPtr, str, false);
+      strPtr = writeAsciiToMemory(telnet, str);
       heap.setUint32(argvPointer + ((i + 1) << 2), strPtr, true);
       toFree.push(strPtr);
     }
 
-    telnet._telnet_send_zmp(this.pointer, count, argvPointer);
+    telnet.telnet_send_zmp(this.pointer, count, argvPointer);
     toFree.forEach(freeIt);
   }
 
   /** Call this method when the connection is disposed or you will have memory leaks. */
   dispose(): void {
     this._toFree.forEach(freeIt);
-    telnet._telnet_free(this.pointer);
+    telnet.telnet_free(this.pointer);
     Telnet.map.delete(this.pointer);
   }
 }
