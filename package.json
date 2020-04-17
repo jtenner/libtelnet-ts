@@ -1,6 +1,6 @@
 {
   "name": "libtelnet-ts",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "libtelnet compiled to wasm, and wrapped in typescript",
   "main": "lib/index.js",
   "scripts": {
