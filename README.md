@@ -96,6 +96,24 @@ This document covers only the most basic functions. See the
 libtelnet manual pages or HTML documentation for a complete
 reference.
 
+### II.c Deno Usage and Bootstrapping
+
+In order to use this module inside deno, first install the
+package locally, or perform a git clone. This module
+requires the use of `std/node/module.ts` to be
+bootstrapped.
+
+Then use the following script to bootstrap telnet.
+
+```ts
+import { createRequire } from "https://deno.land/std/node/module.ts";
+
+const require_ = createRequire(import.meta.url);
+const telnet = require_("./node_modules/libtelnet-ts/lib/index.js");
+
+console.log(telnet);
+```
+
 #### IIIa. Initialization
 
 Using libtelnet requires the initialization of a `Telnet` class
