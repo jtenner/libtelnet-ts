@@ -76,10 +76,18 @@ let runtime: InstantiationResult;
 
 if (typeof require === "function") {
   const fs = require("fs");
+  const readFile = fs.promises
+    ? fs.promises.readFile
+    : (strPath: string) =>
+        new Promise((resolve, reject) => {
+          fs.readFile(strPath, (err: any, buffer: Uint8Array) => {
+            if (err) reject(err);
+            else resolve(buffer);
+          });
+        });
   const path = require("path");
   const wasmPath = path.resolve(__dirname, "../build/libtelnet.wasm");
-  runtime = fs.promises
-    .readFile(wasmPath)
+  runtime = readFile(wasmPath)
     .then((buffer: Buffer) => {
       return WebAssembly.instantiate(buffer, createImports());
     })
