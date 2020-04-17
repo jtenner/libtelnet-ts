@@ -1,7 +1,13 @@
 import { TelnetOption } from "./consts";
 import { TelnetAPI } from "./TelnetAPI";
+import { getHeapU8 } from "./util";
+import { runtime } from "./bootstrap";
 
-const telnet = require("../build/libtelnet") as TelnetAPI;
+let telnet: TelnetAPI;
+
+runtime.then((e) => {
+  telnet = e.instance.exports as any;
+});
 
 /** This class represents a table of supported telnet options. */
 export class CompatibilityTable {
@@ -24,11 +30,11 @@ export class CompatibilityTable {
     if (this.pointer !== 0) return this;
 
     // allocate the array
-    const arrayPointer = telnet._malloc(256);
+    const arrayPointer = telnet.malloc(256);
     if (arrayPointer === 0) throw new Error("Out of memory.");
 
     // set the memory at the pointer
-    telnet.HEAPU8.set(this.table, arrayPointer);
+    getHeapU8(telnet).set(this.table, arrayPointer);
 
     this.pointer = arrayPointer;
     return this;
@@ -36,6 +42,6 @@ export class CompatibilityTable {
 
   /** Dispose this table when it is no longer needed or used. */
   public dispose() {
-    telnet._free(this.pointer);
+    telnet.free(this.pointer);
   }
 }

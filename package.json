@@ -10,16 +10,14 @@
     "rimraf-doc": "rimraf docs && touch .nojekyll",
     "rimraf-lib": "rimraf lib",
     "compile:initial-run": "emcc",
-    "compile:release": "emcc -O2 libtelnet.c -s EXTRA_EXPORTED_RUNTIME_METHODS='[\"UTF8ToString\",\"stringToUTF8\",\"lengthBytesUTF8\",\"AsciiToString\",\"writeAsciiToMemory\"]' -s EXPORTED_FUNCTIONS=@libtelnet.exports -o build/libtelnet.js -DHAVE_ZLIB -s USE_ZLIB=1",
-    "compile:debug": "emcc libtelnet.c -s EXTRA_EXPORTED_RUNTIME_METHODS='[\"UTF8ToString\",\"stringToUTF8\",\"lengthBytesUTF8\",\"AsciiToString\",\"writeAsciiToMemory\"]' -s EXPORTED_FUNCTIONS=@libtelnet.exports -o build/libtelnet.js -DHAVE_ZLIB -s USE_ZLIB=1",
-    "build:release": "run-s rimraf-build rimraf-lib mkdir-build compile:release prettier tsc",
-    "build:debug": "run-s rimraf-build rimraf-lib mkdir-build prettier compile:debug tsc",
+    "compile": "emcc -O3 libtelnet.c -s EXPORTED_FUNCTIONS=@libtelnet.exports -o build/libtelnet.js -DHAVE_ZLIB -s USE_ZLIB=1 -s STANDALONE_WASM",
+    "build": "run-s rimraf-build rimraf-lib mkdir-build compile prettier tsc",
     "tsc": "tsc",
     "docs": "run-s rimraf-doc typedoc",
     "prettier": "prettier --write .",
     "test": "node test/telnet",
     "update-snapshots": "node test/telnet-test --create",
-    "pre-commit": "run-s build:release test"
+    "pre-commit": "run-s build test"
   },
   "repository": {
     "type": "git",

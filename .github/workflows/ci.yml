@@ -10,7 +10,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu]
-        config: [debug, release]
 
     runs-on: ${{ matrix.os }}-latest
 
@@ -23,7 +22,7 @@ jobs:
 
       - name: build
         shell: bash
-        run: cd emsdk && source ./emsdk_env.sh && cd .. && npm run build:${{ matrix.config }}
+        run: cd emsdk && source ./emsdk_env.sh && cd .. && npm run build
 
       - name: test
         shell: bash
