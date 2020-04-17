@@ -119,6 +119,7 @@ export declare enum TelnetOption {
     COMPRESS = 85,
     COMPRESS2 = 86,
     ZMP = 93,
+    GMCP = 201,
     EXOPL = 255,
     MCCP2 = 86
 }

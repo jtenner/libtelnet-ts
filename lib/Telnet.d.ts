@@ -12,7 +12,7 @@ export declare class Telnet extends EventEmitter {
      * When the runtime is finally initialized, this promise will resolve,
      * and telnet objects can finally be instantiated.
      */
-    static ready: Promise<unknown>;
+    static ready: Promise<void>;
     /** A map of pointers to their respective Telnet objects for event routing. */
     private static map;
     /** A collection of pointers to be freed when this Telnet object is disposed. */
@@ -108,6 +108,10 @@ export declare class Telnet extends EventEmitter {
      * @param {ArrayLike<number>} data - The data to be encoded.
      */
     subnegotiation(telopt: TelnetOption, data: ArrayLike<number>): void;
+    /** Begin COMPRESS2. */
+    beginCompress2(): void;
+    /** Send a ZMP command, and a list of optional arguments. */
+    zmp(command: string, args?: string[]): void;
     /** Call this method when the connection is disposed or you will have memory leaks. */
     dispose(): void;
 }
